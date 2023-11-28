@@ -1,0 +1,21 @@
+[package]
+name = "nu_plugin_image"
+license = "MIT"
+authors = ["Motalleb Fallahnezhad <fmotalleb@gmail.com>"]
+keywords = ["nushell", "qr-code", "plugin"]
+homepage = "https://github.com/FMotalleb/nu_plugin_image"
+repository = "https://github.com/FMotalleb/nu_plugin_image"
+description = "A nushell plugin to create qr code in terminal"
+version = "1.0.0"
+edition = "2021"
+readme = "README.md"
+
+[dependencies]
+nu-plugin = "0.87.1"
+nu-protocol = { version = "0.87.1", features = ["plugin"] }
+image = "0.24.7"
+terminal_size = "0.3.0"
+getopts = "0.2.21"
+unicode-segmentation = "1.8.0"
+log = "0.4.14"
+simple_logger = "4.3.0"

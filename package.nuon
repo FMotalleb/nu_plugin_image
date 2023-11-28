@@ -1,0 +1,7 @@
+{
+  "name": "nu_plugin_image",
+  "version": "1.0.0",
+  "description": "A nushell plugin to create qr code in terminal",
+  "license": "LICENSE",
+  "type": "custom"
+}
