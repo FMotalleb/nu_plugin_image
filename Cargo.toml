@@ -2,10 +2,10 @@
 name = "nu_plugin_image"
 license = "MIT"
 authors = ["Motalleb Fallahnezhad <fmotalleb@gmail.com>"]
-keywords = ["nushell", "qr-code", "plugin"]
+keywords = ["nushell", "image", "render", "plugin"]
 homepage = "https://github.com/FMotalleb/nu_plugin_image"
 repository = "https://github.com/FMotalleb/nu_plugin_image"
-description = "A nushell plugin to create qr code in terminal"
+description = "A nushell plugin to open png images in the shell and save ansi string as images (like tables or ...)"
 version = "1.0.0"
 edition = "2021"
 readme = "README.md"
@@ -22,6 +22,6 @@ simple_logger = "4.3.0"
 
 clap = { version = "4", features = ["derive"] }
 imageproc = "0.23"
-include-flate = "0.1"
+include-flate = "0.3"
 rusttype = "0.9"
-vte = "0.11"
+vte = "0.13"
