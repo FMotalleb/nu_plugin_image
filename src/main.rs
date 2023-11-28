@@ -1,5 +1,5 @@
 use nu_plugin::{self, EvaluatedCall, LabeledError};
-use nu_plugin_image::image_to_ansi;
+use nu_plugin_image::{ansi_to_png, image_to_ansi};
 use nu_protocol::{Category, PluginSignature, SyntaxShape, Type, Value};
 
 pub struct Plugin;
@@ -67,5 +67,6 @@ impl nu_plugin::Plugin for Plugin {
 }
 
 fn main() {
-    nu_plugin::serve_plugin(&mut Plugin {}, nu_plugin::MsgPackSerializer {})
+    ansi_to_png();
+    // nu_plugin::serve_plugin(&mut Plugin {}, nu_plugin::MsgPackSerializer {})
 }

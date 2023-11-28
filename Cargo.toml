@@ -19,3 +19,9 @@ getopts = "0.2.21"
 unicode-segmentation = "1.8.0"
 log = "0.4.14"
 simple_logger = "4.3.0"
+
+clap = { version = "4", features = ["derive"] }
+imageproc = "0.23"
+include-flate = "0.1"
+rusttype = "0.9"
+vte = "0.11"
