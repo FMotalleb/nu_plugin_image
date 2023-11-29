@@ -5,10 +5,8 @@ A [nushell](https://www.nushell.sh/) plugin to create qr code in terminal
 ## Examples
 
 ```bash
-~> "https://google.com" | to qr
+~> ls | table -c | to png -o output.png
 ```
-
-![image](https://github.com/FMotalleb/nu_plugin_image/assets/30149519/1771961a-b06b-4310-81ed-63865e8d2f8e)
 
 ## Installing
 
