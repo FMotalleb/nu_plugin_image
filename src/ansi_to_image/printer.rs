@@ -136,29 +136,29 @@ impl<'a> Perform for Printer<'a> {
                 self.state.current_y += self.settings_internal.new_line_distance;
             }
 
-            _ => eprintln!("[execute] {byte}, {byte:02x}"),
+            _ => println!("[execute] {byte}, {byte:02x}"),
         }
 
         self.state.last_execute_byte = Some(byte)
     }
 
     fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
-        eprintln!(
+        println!(
             "[hook] params={params:?}, intermediates={intermediates:?}, ignore={ignore:?}, \
              char={c:?}"
         );
     }
 
     fn put(&mut self, byte: u8) {
-        eprintln!("[put] {byte:02x}");
+        println!("[put] {byte:02x}");
     }
 
     fn unhook(&mut self) {
-        eprintln!("[unhook]");
+        println!("[unhook]");
     }
 
     fn osc_dispatch(&mut self, params: &[&[u8]], bell_terminated: bool) {
-        eprintln!("[osc_dispatch] params={params:?} bell_terminated={bell_terminated}2");
+        println!("[osc_dispatch] params={params:?} bell_terminated={bell_terminated}2");
     }
 
     fn csi_dispatch(&mut self, params: &Params, _intermediates: &[u8], _ignore: bool, _c: char) {
@@ -212,10 +212,10 @@ impl<'a> Perform for Printer<'a> {
                 | EscapeSequence::NotReserved
                 | EscapeSequence::NormalItensity
                 | EscapeSequence::RapidBlink => {
-                    eeprintln!("not implemented for action: {action:?}")
+                    eprintln!("not implemented for action: {action:?}")
                 }
                 EscapeSequence::Unimplemented(value) => {
-                    eeprintln!("not implemented for value: {value:?}")
+                    eprintln!("not implemented for value: {value:?}")
                 }
             }
         }
