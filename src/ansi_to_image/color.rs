@@ -4,6 +4,7 @@ pub(super) enum ColorType {
     PrimaryBackground,
     Normal(Color),
     Bright(Color),
+    Fixed(u8),
     Rgb((u8, u8, u8)),
 }
 

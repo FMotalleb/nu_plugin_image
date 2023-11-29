@@ -11,13 +11,12 @@ edition = "2021"
 readme = "README.md"
 
 [dependencies]
-nu-plugin = "0.87.1"
-nu-protocol = { version = "0.87.1", features = ["plugin"] }
+nu-plugin = { version = "0.87.1", path = "../nushell/crates/nu-plugin" }
+nu-protocol = { version = "0.87.1", path = "../nushell/crates/nu-protocol", features = ["plugin"] }
 image = "0.24.7"
 terminal_size = "0.3.0"
 getopts = "0.2.21"
 unicode-segmentation = "1.8.0"
-
 clap = { version = "4", features = ["derive"] }
 imageproc = "0.23"
 include-flate = "0.3"

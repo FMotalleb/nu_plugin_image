@@ -4,7 +4,7 @@ use rusttype::{Font, Scale};
 use std::collections::BTreeMap;
 use vte::{Params, Perform};
 
-use crate::ansi_to_image::{color::ColorType, escape::EscapeSequence, pallete::Palette};
+use crate::ansi_to_image::{color::ColorType, escape::EscapeSequence, palette::Palette};
 
 pub(super) struct Settings<'a> {
     pub(super) font: Font<'a>,
@@ -136,32 +136,35 @@ impl<'a> Perform for Printer<'a> {
                 self.state.current_y += self.settings_internal.new_line_distance;
             }
 
-            _ => println!("[execute] {byte}, {byte:02x}"),
+            _ => eprintln!("[execute] {byte}, {byte:02x}"),
         }
 
         self.state.last_execute_byte = Some(byte)
     }
 
     fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
-        println!(
+        eprintln!(
             "[hook] params={params:?}, intermediates={intermediates:?}, ignore={ignore:?}, \
              char={c:?}"
         );
     }
 
     fn put(&mut self, byte: u8) {
-        println!("[put] {byte:02x}");
+        eprintln!("[put] {byte:02x}");
     }
 
     fn unhook(&mut self) {
-        println!("[unhook]");
+        eprintln!("[unhook]");
     }
 
     fn osc_dispatch(&mut self, params: &[&[u8]], bell_terminated: bool) {
-        println!("[osc_dispatch] params={params:?} bell_terminated={bell_terminated}2");
+        eprintln!("[osc_dispatch] params={params:?} bell_terminated={bell_terminated}2");
     }
 
-    fn csi_dispatch(&mut self, params: &Params, _intermediates: &[u8], _ignore: bool, _c: char) {
+    fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
+        eprintln!(
+            "[csi_dispatch] params={params:?}, intermediates={intermediates:?}, ignore={ignore:?}, char={c:?}"
+        );
         let actions = EscapeSequence::parse_params(params);
 
         for action in actions {
