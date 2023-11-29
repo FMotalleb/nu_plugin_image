@@ -17,19 +17,16 @@ pub fn ansi_to_png() {
 
     let mut input = std::io::BufReader::new(std::fs::File::open(opt.input_path).unwrap());
 
-    flate!(static FONT: [u8] from
-        "resources/ttf-iosevka-term-7.2.6/iosevka-term-extended.ttf");
-
+    flate!(static FONT_MEDIUM: [u8] from
+        "resources/IosevkaTerm/IosevkaTermNerdFontMono-Medium.ttf");
     flate!(static FONT_BOLD: [u8] from
-        "resources/ttf-iosevka-term-7.2.6/iosevka-term-extendedbold.ttf");
-
+        "resources/IosevkaTerm/IosevkaTermNerdFontMono-Bold.ttf");
     flate!(static FONT_ITALIC: [u8] from
-        "resources/ttf-iosevka-term-7.2.6/iosevka-term-extendeditalic.ttf");
-
+        "resources/IosevkaTerm/IosevkaTermNerdFontMono-Italic.ttf");
     flate!(static FONT_ITALIC_BOLD: [u8] from
-        "resources/ttf-iosevka-term-7.2.6/iosevka-term-extendedbolditalic.ttf");
+        "resources/IosevkaTerm/IosevkaTermNerdFontMono-BoldItalic.ttf");
 
-    let font = Font::try_from_bytes(&FONT).unwrap();
+    let font = Font::try_from_bytes(&FONT_MEDIUM).unwrap();
     let font_bold = Font::try_from_bytes(&FONT_BOLD).unwrap();
     let font_italic = Font::try_from_bytes(&FONT_ITALIC).unwrap();
     let font_italic_bold = Font::try_from_bytes(&FONT_ITALIC_BOLD).unwrap();
