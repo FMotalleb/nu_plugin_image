@@ -73,8 +73,8 @@ impl EscapeSequence {
                     14 => ColorType::Bright(Color::Cyan),
                     15 => ColorType::Bright(Color::White),
 
-                    // TODO: Implemente rgb colors https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
-                    16..=255 => ColorType::Rgb((0, 0, 0)),
+                    // These are fixed colors and could be used like ansi 38;5;numberm or 48;5;numberm
+                    16..=255 => ColorType::Fixed(**n as u8),
 
                     _ => return vec![Self::Unimplemented(vec![**fg_or_bg, 5, **n])],
                 };
