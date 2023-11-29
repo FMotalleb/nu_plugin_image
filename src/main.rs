@@ -54,7 +54,12 @@ impl nu_plugin::Plugin for Plugin {
                 .category(Category::Conversions),
             PluginSignature::build("to png")
                 .named("width", SyntaxShape::Int, "output width", Some('w'))
-                .named("path", SyntaxShape::Filepath, "output file path", Some('p'))
+                .named(
+                    "output-path",
+                    SyntaxShape::Filepath,
+                    "output file path",
+                    Some('o'),
+                )
                 .usage("convert ansi output to image")
                 .input_output_type(Type::String, Type::Nothing)
                 .category(Category::Conversions),

@@ -9,7 +9,11 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         Some(val) => Some(val.as_int().unwrap() as u32),
         None => None,
     };
-    let out = call.get_flag_value("path").unwrap().as_path().unwrap();
+    let out = call
+        .get_flag_value("output-path")
+        .unwrap()
+        .as_path()
+        .unwrap();
     make_image(out.as_path(), size, i);
-    Ok(Value::string("done", call.head))
+    Ok(Value::nothing(call.head))
 }
