@@ -1,8 +1,9 @@
+mod ansi_to_image;
 mod color;
 mod escape;
-mod main;
+mod nu_plugin;
 mod opt;
 mod pallete;
 mod printer;
-
-pub use main::ansi_to_png;
+// pub use ansi_to_image::make_image;
+pub use nu_plugin::ansi_to_image;

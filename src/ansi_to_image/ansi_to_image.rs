@@ -1,22 +1,18 @@
-use clap::Parser as _;
 use image::RgbImage;
 use include_flate::flate;
 use rusttype::{Font, Scale};
-use std::io::Read;
+use std::{
+    io::{BufReader, Read},
+    path::Path,
+};
 use vte::Parser;
 
 use crate::ansi_to_image::{
-    opt::Opt,
     pallete::Palette,
     printer::{self, Settings},
 };
 
-pub fn ansi_to_png() {
-    // TODO add https://github.com/AlexanderThaller/ansi2png-rs/tree/main/resources
-    let opt = Opt::parse();
-
-    let mut input = std::io::BufReader::new(std::fs::File::open(opt.input_path).unwrap());
-
+pub fn make_image(output_path: &Path, png_width: Option<u32>, input: &[u8]) {
     flate!(static FONT_MEDIUM: [u8] from
         "resources/IosevkaTerm/IosevkaTermNerdFontMono-Medium.ttf");
     flate!(static FONT_BOLD: [u8] from
@@ -38,7 +34,6 @@ pub fn ansi_to_png() {
     };
 
     let pallete = Palette::Custom;
-    let png_width = opt.png_width;
 
     let mut statemachine = Parser::new();
     let mut performer = printer::new(Settings {
@@ -51,11 +46,11 @@ pub fn ansi_to_png() {
         pallete,
         png_width,
     });
-
+    let reader = &mut BufReader::new(input);
     let mut buf = [0; 2048];
 
     loop {
-        match input.read(&mut buf) {
+        match reader.read(&mut buf) {
             Ok(0) => break,
 
             Ok(n) => {
@@ -72,5 +67,6 @@ pub fn ansi_to_png() {
     }
 
     let image: RgbImage = performer.into();
-    image.save(opt.output_path).unwrap();
+
+    image.save(output_path).unwrap();
 }
