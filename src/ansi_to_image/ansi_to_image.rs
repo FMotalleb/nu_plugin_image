@@ -60,12 +60,11 @@ pub fn make_image(output_path: &Path, png_width: Option<u32>, input: &[u8]) {
             }
 
             Err(err) => {
-                println!("err: {err}");
+                eprintln!("err: {err}");
                 break;
             }
         }
     }
-
     let image: RgbImage = performer.into();
 
     image.save(output_path).unwrap();
