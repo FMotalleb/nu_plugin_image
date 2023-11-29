@@ -11,8 +11,8 @@ edition = "2021"
 readme = "README.md"
 
 [dependencies]
-nu-plugin = { version = "0.87.1", path = "../nushell/crates/nu-plugin" }
-nu-protocol = { version = "0.87.1", path = "../nushell/crates/nu-protocol", features = ["plugin"] }
+nu-plugin = { version = "0.87.1" }
+nu-protocol = { version = "0.87.1", features = ["plugin"] }
 image = "0.24.7"
 terminal_size = "0.3.0"
 getopts = "0.2.21"

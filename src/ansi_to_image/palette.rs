@@ -36,49 +36,49 @@ pub struct PaletteData {
 }
 
 impl Palette {
-    fn pallete(&self) -> PaletteData {
+    fn palette(&self) -> PaletteData {
         match self {
-            Palette::Custom => pallete_custom(),
-            Palette::Test => pallete_test(),
+            Palette::Custom => palette_custom(),
+            Palette::Test => palette_test(),
         }
     }
 
     pub fn get_color(&self, color: ColorType) -> [u8; 3] {
-        let pallete = self.pallete();
+        let palette = self.palette();
 
         match color {
-            ColorType::PrimaryForeground => pallete.primary_foreground,
-            ColorType::PrimaryBackground => pallete.primary_background,
-            ColorType::Rgb(rgb) => [rgb.0, rgb.1, rgb.2],
+            ColorType::PrimaryForeground => palette.primary_foreground,
+            ColorType::PrimaryBackground => palette.primary_background,
+            ColorType::Rgb { field1: rgb } => [rgb.0, rgb.1, rgb.2],
 
             ColorType::Normal(color) => match color {
-                Color::Black => pallete.black,
-                Color::Red => pallete.red,
-                Color::Green => pallete.green,
-                Color::Yellow => pallete.yellow,
-                Color::Blue => pallete.blue,
-                Color::Magenta => pallete.magenta,
-                Color::Cyan => pallete.cyan,
-                Color::White => pallete.white,
+                Color::Black => palette.black,
+                Color::Red => palette.red,
+                Color::Green => palette.green,
+                Color::Yellow => palette.yellow,
+                Color::Blue => palette.blue,
+                Color::Magenta => palette.magenta,
+                Color::Cyan => palette.cyan,
+                Color::White => palette.white,
             },
 
             ColorType::Bright(color) => match color {
-                Color::Black => pallete.bright_black,
-                Color::Red => pallete.bright_red,
-                Color::Green => pallete.bright_green,
-                Color::Yellow => pallete.bright_yellow,
-                Color::Blue => pallete.bright_blue,
-                Color::Magenta => pallete.bright_magenta,
-                Color::Cyan => pallete.bright_cyan,
-                Color::White => pallete.bright_white,
+                Color::Black => palette.bright_black,
+                Color::Red => palette.bright_red,
+                Color::Green => palette.bright_green,
+                Color::Yellow => palette.bright_yellow,
+                Color::Blue => palette.bright_blue,
+                Color::Magenta => palette.bright_magenta,
+                Color::Cyan => palette.bright_cyan,
+                Color::White => palette.bright_white,
             },
 
-            ColorType::Fixed(num) => pallete.fixed[num as usize],
+            ColorType::Fixed(num) => palette.fixed[num as usize],
         }
     }
 }
 
-fn pallete_custom() -> PaletteData {
+fn palette_custom() -> PaletteData {
     PaletteData {
         // primary_background: "0x161616".parse().unwrap()
         // primary_foreground: "0xf2f2f2".parse().unwrap()
@@ -364,7 +364,7 @@ fn pallete_custom() -> PaletteData {
     }
 }
 
-fn pallete_test() -> PaletteData {
+fn palette_test() -> PaletteData {
     PaletteData {
         // primary_background: "0x161616".parse().unwrap()
         // primary_foreground: "0xf2f2f2".parse().unwrap()

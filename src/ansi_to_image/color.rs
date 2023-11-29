@@ -5,7 +5,7 @@ pub(super) enum ColorType {
     Normal(Color),
     Bright(Color),
     Fixed(u8),
-    Rgb((u8, u8, u8)),
+    Rgb { field1: (u8, u8, u8) },
 }
 
 #[derive(Debug, Clone, Copy)]

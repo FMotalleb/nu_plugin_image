@@ -8,7 +8,7 @@ use crate::ansi_to_image::color::{Color, ColorType};
 pub(super) enum EscapeSequence {
     Reset,
 
-    BlackletterFont,
+    BlackLetterFont,
     Bold,
     Faint,
     Italic,
@@ -18,8 +18,8 @@ pub(super) enum EscapeSequence {
 
     NotBold,
     NotUnderline,
-    NormalItensity,
-    NotItalicNorBlackletter,
+    NormalIntensity,
+    NotItalicNorBlackLetter,
     NotBlinking,
 
     ReverseVideo,
@@ -120,10 +120,10 @@ impl EscapeSequence {
             18 => Self::SetAlternativeFont,
             19 => Self::SetAlternativeFont,
 
-            20 => Self::BlackletterFont,
+            20 => Self::BlackLetterFont,
             21 => Self::NotBold,
-            22 => Self::NormalItensity,
-            23 => Self::NotItalicNorBlackletter,
+            22 => Self::NormalIntensity,
+            23 => Self::NotItalicNorBlackLetter,
             24 => Self::NotUnderline,
             25 => Self::NotBlinking,
 

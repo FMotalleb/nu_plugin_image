@@ -13,7 +13,7 @@ pub(super) struct Settings<'a> {
     pub(super) font_italic_bold: Font<'a>,
     pub(super) font_height: f32,
     pub(super) scale: Scale,
-    pub(super) pallete: Palette,
+    pub(super) palette: Palette,
     pub(super) png_width: Option<u32>,
 }
 
@@ -183,7 +183,7 @@ impl<'a> Perform for Printer<'a> {
                 EscapeSequence::Underline => self.state.underline = true,
 
                 EscapeSequence::NotBold => self.state.font -= FontState::Bold,
-                EscapeSequence::NotItalicNorBlackletter => self.state.font -= FontState::Italic,
+                EscapeSequence::NotItalicNorBlackLetter => self.state.font -= FontState::Italic,
                 EscapeSequence::NotUnderline => self.state.underline = false,
 
                 EscapeSequence::ForegroundColor(color_type) => {
@@ -201,7 +201,7 @@ impl<'a> Perform for Printer<'a> {
                     self.state.background_color = ColorType::PrimaryBackground
                 }
 
-                EscapeSequence::BlackletterFont
+                EscapeSequence::BlackLetterFont
                 | EscapeSequence::Faint
                 | EscapeSequence::SlowBlink
                 | EscapeSequence::NotBlinking
@@ -213,7 +213,7 @@ impl<'a> Perform for Printer<'a> {
                 | EscapeSequence::DisableProportionalSpacing
                 | EscapeSequence::NeitherSuperscriptNorSubscript
                 | EscapeSequence::NotReserved
-                | EscapeSequence::NormalItensity
+                | EscapeSequence::NormalIntensity
                 | EscapeSequence::RapidBlink => {
                     eprintln!("not implemented for action: {action:?}")
                 }
@@ -254,7 +254,7 @@ impl<'a> From<Printer<'a>> for RgbImage {
             *pixel = image::Rgb(
                 printer
                     .settings
-                    .pallete
+                    .palette
                     .get_color(ColorType::PrimaryBackground),
             );
         }
@@ -267,7 +267,7 @@ impl<'a> From<Printer<'a>> for RgbImage {
             for x in *x..background_end_x {
                 for y in *y..background_end_y {
                     let pixel =
-                        image::Rgb(printer.settings.pallete.get_color(entry.background_color));
+                        image::Rgb(printer.settings.palette.get_color(entry.background_color));
 
                     image.put_pixel(x, y, pixel);
                 }
@@ -284,7 +284,7 @@ impl<'a> From<Printer<'a>> for RgbImage {
 
             draw_text_mut(
                 &mut image,
-                Rgb(printer.settings.pallete.get_color(entry.foreground_color)),
+                Rgb(printer.settings.palette.get_color(entry.foreground_color)),
                 (*x).try_into().unwrap(),
                 (*y).try_into().unwrap(),
                 printer.settings.scale,
@@ -299,7 +299,7 @@ impl<'a> From<Printer<'a>> for RgbImage {
 
                 for underline_x in underline_start..underline_end {
                     let pixel =
-                        image::Rgb(printer.settings.pallete.get_color(entry.foreground_color));
+                        image::Rgb(printer.settings.palette.get_color(entry.foreground_color));
 
                     image.put_pixel(underline_x, underline_y - 1, pixel);
                     image.put_pixel(underline_x, underline_y, pixel);

@@ -33,9 +33,9 @@ pub fn make_image(output_path: &Path, png_width: Option<u32>, input: &[u8]) {
         y: font_height,
     };
 
-    let pallete = Palette::Custom;
+    let palette = Palette::Custom;
 
-    let mut statemachine = Parser::new();
+    let mut state_machine = Parser::new();
     let mut performer = printer::new(Settings {
         font,
         font_bold,
@@ -43,7 +43,7 @@ pub fn make_image(output_path: &Path, png_width: Option<u32>, input: &[u8]) {
         font_italic_bold,
         font_height,
         scale,
-        pallete,
+        palette,
         png_width,
     });
     let reader = &mut BufReader::new(input);
@@ -55,7 +55,7 @@ pub fn make_image(output_path: &Path, png_width: Option<u32>, input: &[u8]) {
 
             Ok(n) => {
                 for byte in &buf[..n] {
-                    statemachine.advance(&mut performer, *byte);
+                    state_machine.advance(&mut performer, *byte);
                 }
             }
 
