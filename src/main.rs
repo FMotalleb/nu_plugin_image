@@ -8,11 +8,11 @@ impl nu_plugin::Plugin for Plugin {
     fn signature(&self) -> Vec<PluginSignature> {
         vec![
             PluginSignature::build("from png")
-                .switch(
-                    "verbose",
-                    "prints log of the work into the terminal",
-                    Some('v'),
-                )
+                // .switch(
+                //     "verbose",
+                //     "prints log of the work into the terminal",
+                //     Some('v'),
+                // )
                 .switch(
                     "reverse-bg",
                     "reverse background and foreground colors",

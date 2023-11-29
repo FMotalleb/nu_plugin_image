@@ -8,7 +8,7 @@ pub fn image_to_ansi(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         Ok(params) => {
             match to_ansi_converter(
                 &params.file,
-                params.verbose,
+                // params.verbose,
                 params.reverse_bg,
                 params.blinking,
                 params.width,
@@ -31,7 +31,7 @@ pub fn image_to_ansi(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
 
 struct IntoAnsiParams {
     file: Vec<u8>,
-    verbose: bool,
+    // verbose: bool,
     reverse_bg: bool,
     blinking: bool,
     width: u32,
@@ -44,7 +44,7 @@ struct IntoAnsiParams {
 fn build_params(call: &EvaluatedCall, input: &Value) -> Result<IntoAnsiParams, LabeledError> {
     let mut params = IntoAnsiParams {
         file: [].to_vec(),
-        verbose: false,
+        // verbose: false,
         blinking: false,
         reverse_bg: false,
         height: 0,
@@ -57,7 +57,7 @@ fn build_params(call: &EvaluatedCall, input: &Value) -> Result<IntoAnsiParams, L
         Ok(file) => params.file = file.to_owned(),
         Err(err) => return Err(make_params_err(err.to_string(), Some(call.head))),
     };
-    params.verbose = call.has_flag("verbose");
+    // params.verbose = call.has_flag("verbose");
     params.reverse_bg = call.has_flag("reverse-bg");
     params.blinking = call.has_flag("blink");
     params.width = match load_u32(call, "width") {

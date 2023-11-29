@@ -1,7 +1,7 @@
 extern crate image;
 
 use image::GenericImageView;
-use log::debug; //{debug, info, trace, warn};
+// use log::debug; //{debug, info, trace, warn};
 
 use std::error::Error;
 use std::fmt;
@@ -182,8 +182,8 @@ pub fn img_to_ansi(
 
     let img_dims = image.dimensions();
 
-    debug!("Image dims: {} x {}", img_dims.0, img_dims.1);
-    debug!("Output: {} x {} characters", cons_w, cons_h);
+    // debug!("Image dims: {} x {}", img_dims.0, img_dims.1);
+    // debug!("Output: {} x {} characters", cons_w, cons_h);
 
     // Size of console output, in pixels
     let cons_w_px = cons_w * font_w_px;
@@ -192,7 +192,7 @@ pub fn img_to_ansi(
     let ratio_w = cons_w_px as f64 / img_dims.0 as f64;
     let ratio_h = cons_h_px as f64 / img_dims.1 as f64;
 
-    debug!("Ratios {} {}", ratio_w, ratio_h);
+    // debug!("Ratios {} {}", ratio_w, ratio_h);
     let mut targ_w;
     let mut targ_h;
 
@@ -221,20 +221,20 @@ pub fn img_to_ansi(
     let targ_w_ch = targ_w / font_w_px;
     let targ_h_ch = targ_h / font_h_px;
 
-    debug!("Target Size: {} {} characters", targ_w_ch, targ_h_ch);
+    // debug!("Target Size: {} {} characters", targ_w_ch, targ_h_ch);
 
     // Derive the bounds of the sample area.
     // Drive from long edge of the image.
     let sample_w = img_dims.0 / targ_w_ch;
     let sample_h = img_dims.1 / targ_h_ch;
 
-    debug!("Sample size: {} x {}", sample_w, sample_h);
+    // debug!("Sample size: {} x {}", sample_w, sample_h);
 
     let num_chunks_x = img_dims.0 / sample_w;
     let num_chunks_y = img_dims.1 / sample_h;
 
-    debug!("Horiz Chunks: {}", num_chunks_x);
-    debug!("Vert Chunks: {}", num_chunks_y);
+    // debug!("Horiz Chunks: {}", num_chunks_x);
+    // debug!("Vert Chunks: {}", num_chunks_y);
 
     let mut out_str = String::from("");
 

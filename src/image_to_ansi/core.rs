@@ -1,9 +1,5 @@
 use terminal_size::{terminal_size, Height, Width};
 
-use log::debug;
-use log::LevelFilter;
-use simple_logger::SimpleLogger;
-
 use crate::image_to_ansi::{lib::img_to_ansi, AnsiImageError, ColorChar, DisplayMode};
 
 fn get_terminal_size() -> Result<(u16, u16), AnsiImageError> {
@@ -38,7 +34,7 @@ fn get_display_mode(character: Option<String>, reverse: bool, blink: bool) -> u8
 
 pub fn to_ansi_converter(
     file: &Vec<u8>,
-    verbose: bool,
+    // verbose: bool,
     reverse_bg: bool,
     blinking: bool,
     out_width: u32,
@@ -47,14 +43,6 @@ pub fn to_ansi_converter(
     font_w_px: u32,
     font_h_px: u32,
 ) -> Result<String, AnsiImageError> {
-    SimpleLogger::new()
-        .with_level(match verbose {
-            true => LevelFilter::Debug,
-            false => LevelFilter::Error,
-        })
-        .init()
-        .unwrap();
-
     let out_char = match character.clone() {
         Some(c) => c,
         None => String::from(ColorChar::DEFAULT_CHAR),
@@ -66,16 +54,16 @@ pub fn to_ansi_converter(
         return Err(e);
     }
 
-    let term_dims = result.unwrap();
+    // let term_dims = result.unwrap();
 
-    debug!("Terminal is {} x {} characters.", term_dims.0, term_dims.1);
+    // debug!("Terminal is {} x {} characters.", term_dims.0, term_dims.1);
 
     // Get output width and height, in characters.
     // Default to console size.
     // let out_width = get_int_arg("x", &matches, term_dims.0);
     // let out_height = get_int_arg("y", &matches, term_dims.1);
 
-    debug!("Output {} x {} characters", out_width, out_height);
+    // debug!("Output {} x {} characters", out_width, out_height);
 
     // Get character size in terminal.
     // Defaults to 8x16 pixels.
