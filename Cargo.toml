@@ -6,7 +6,7 @@ keywords = ["nushell", "image", "render", "plugin"]
 homepage = "https://github.com/FMotalleb/nu_plugin_image"
 repository = "https://github.com/FMotalleb/nu_plugin_image"
 description = "A nushell plugin to open png images in the shell and save ansi string as images (like tables or ...)"
-version = "1.0.0"
+version = "0.1.0"
 edition = "2021"
 readme = "README.md"
 
