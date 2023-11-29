@@ -76,6 +76,5 @@ impl nu_plugin::Plugin for Plugin {
 }
 
 fn main() {
-    // make_image();
     nu_plugin::serve_plugin(&mut Plugin {}, nu_plugin::MsgPackSerializer {})
 }
