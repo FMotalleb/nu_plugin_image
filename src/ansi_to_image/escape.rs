@@ -89,7 +89,20 @@ impl EscapeSequence {
                     _ => vec![Self::Unimplemented(vec![**fg_or_bg, 5, **n])],
                 }
             }
+            [fg_or_bg, 2, r, g, b] => {
+                let color = ColorType::Rgb {
+                    field1: (**r as u8, **g as u8, **b as u8),
+                };
+                match fg_or_bg {
+                    // foreground
+                    38 => vec![Self::ForegroundColor(color)],
 
+                    // background
+                    48 => vec![Self::BackgroundColor(color)],
+
+                    _ => vec![Self::Unimplemented(vec![**fg_or_bg, 2, **r, **g, **b])],
+                }
+            }
             v => vec![Self::Unimplemented(v.iter().map(|v| **v).collect())],
         }
     }
