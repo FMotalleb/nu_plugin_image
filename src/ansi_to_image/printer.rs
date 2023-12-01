@@ -293,17 +293,17 @@ impl<'a> From<Printer<'a>> for RgbImage {
             );
 
             if entry.underline {
-                let underline_start = *x;
-                let underline_end = x + printer.settings_internal.glyph_advance_width as u32;
-                let underline_y = (y - 6) + printer.settings.font_height as u32;
+                // let underline_start = *x;
+                // let underline_end = x + printer.settings_internal.glyph_advance_width as u32;
+                // let underline_y = (y - 6) + printer.settings.font_height as u32;
 
-                for underline_x in underline_start..underline_end {
-                    let pixel =
-                        image::Rgb(printer.settings.palette.get_color(entry.foreground_color));
+                // for underline_x in underline_start..underline_end {
+                //     let pixel =
+                //         image::Rgb(printer.settings.palette.get_color(entry.foreground_color));
 
-                    image.put_pixel(underline_x, underline_y - 1, pixel);
-                    image.put_pixel(underline_x, underline_y, pixel);
-                }
+                //     image.put_pixel(underline_x, underline_y - 1, pixel);
+                //     image.put_pixel(underline_x, underline_y, pixel);
+                // }
             }
         });
 

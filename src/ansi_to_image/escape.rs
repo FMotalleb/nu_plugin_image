@@ -48,10 +48,6 @@ impl EscapeSequence {
         let params_slice = params.iter().flatten().collect::<Vec<_>>();
 
         match params_slice.as_slice() {
-            [first] => vec![Self::parse_single(first)],
-
-            [first, second] => vec![Self::parse_single(first), Self::parse_single(second)],
-
             // Set foreground (38) or background (48) color
             [fg_or_bg, 5, n] => {
                 let color = match n {
@@ -76,7 +72,7 @@ impl EscapeSequence {
                     // These are fixed colors and could be used like ansi 38;5;numberm or 48;5;numberm
                     16..=255 => ColorType::Fixed(**n as u8),
 
-                    _ => return vec![Self::Unimplemented(vec![**fg_or_bg, 5, **n])],
+                    _ => return vec![Self::Unimplemented(vec![0, **fg_or_bg, 5, **n])],
                 };
 
                 match fg_or_bg {
@@ -86,9 +82,10 @@ impl EscapeSequence {
                     // background
                     48 => vec![Self::BackgroundColor(color)],
 
-                    _ => vec![Self::Unimplemented(vec![**fg_or_bg, 5, **n])],
+                    _ => vec![Self::Unimplemented(vec![1, **fg_or_bg, 5, **n])],
                 }
             }
+
             [fg_or_bg, 2, r, g, b] => {
                 let color = ColorType::Rgb {
                     field1: (**r as u8, **g as u8, **b as u8),
@@ -100,10 +97,27 @@ impl EscapeSequence {
                     // background
                     48 => vec![Self::BackgroundColor(color)],
 
-                    _ => vec![Self::Unimplemented(vec![**fg_or_bg, 2, **r, **g, **b])],
+                    _ => vec![Self::Unimplemented(vec![2, **fg_or_bg, 2, **r, **g, **b])],
                 }
             }
-            v => vec![Self::Unimplemented(v.iter().map(|v| **v).collect())],
+            [5, fg_or_bg, 2, r, g, b] => {
+                let color = ColorType::Rgb {
+                    field1: (**r as u8, **g as u8, **b as u8),
+                };
+                match fg_or_bg {
+                    // foreground
+                    38 => vec![Self::ForegroundColor(color)],
+
+                    // background
+                    48 => vec![Self::BackgroundColor(color)],
+
+                    _ => vec![Self::Unimplemented(vec![2, **fg_or_bg, 2, **r, **g, **b])],
+                }
+            }
+            v => {
+                let flags = v.iter().map(|i| Self::parse_single(&i)).into_iter();
+                return flags.collect();
+            }
         }
     }
 
@@ -152,6 +166,7 @@ impl EscapeSequence {
             37 => Self::ForegroundColor(ColorType::Normal(Color::White)),
 
             39 => Self::DefaultForegroundColor,
+            38 => Self::DefaultForegroundColor,
 
             40 => Self::BackgroundColor(ColorType::Normal(Color::Black)),
             41 => Self::BackgroundColor(ColorType::Normal(Color::Red)),
@@ -162,8 +177,10 @@ impl EscapeSequence {
             46 => Self::BackgroundColor(ColorType::Normal(Color::Cyan)),
             47 => Self::BackgroundColor(ColorType::Normal(Color::White)),
 
+            48 => Self::DefaultBackgroundColor,
             49 => Self::DefaultBackgroundColor,
             50 => Self::DisableProportionalSpacing,
+            53 => Self::CrossedOut,
 
             75 => Self::NeitherSuperscriptNorSubscript,
 
@@ -185,7 +202,7 @@ impl EscapeSequence {
             106 => Self::BackgroundColor(ColorType::Bright(Color::Cyan)),
             107 => Self::BackgroundColor(ColorType::Bright(Color::White)),
 
-            v => Self::Unimplemented(vec![**v]),
+            v => Self::Unimplemented(vec![3, **v]),
         }
     }
 }
