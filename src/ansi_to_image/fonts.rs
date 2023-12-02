@@ -8,8 +8,8 @@ pub enum FontFamily {
     IosevkaTerm,
     #[cfg(feature = "font-anonymous_pro")]
     AnonymousPro,
-    #[cfg(feature = "font-camingo_code")]
-    CamingoCode,
+    #[cfg(feature = "font-source_code_pro")]
+    SourceCodePro,
     #[cfg(feature = "font-ubuntu")]
     Ubuntu,
 }
@@ -29,8 +29,8 @@ impl FontFamily {
         result.push(Self::IosevkaTerm);
         #[cfg(feature = "font-anonymous_pro")]
         result.push(Self::AnonymousPro);
-        #[cfg(feature = "font-camingo_code")]
-        result.push(Self::CamingoCode);
+        #[cfg(feature = "font-source_code_pro")]
+        result.push(Self::SourceCodePro);
         #[cfg(feature = "font-ubuntu")]
         result.push(Self::Ubuntu);
         result
@@ -50,10 +50,10 @@ impl FontFamily {
                     "resources/fonts/Anonymous_Pro/Anonymous_Pro.ttf");
                 &DATA
             }
-            #[cfg(feature = "font-camingo_code")]
-            Self::CamingoCode => {
+            #[cfg(feature = "font-source_code_pro")]
+            Self::SourceCodePro => {
                 flate!(static DATA: [u8] from
-                    "resources/fonts/CamingoCode/CamingoCode-Regular.ttf");
+                    "resources/fonts/SourceCodePro/SourceCodePro-Regular.otf");
                 &DATA
             }
             #[cfg(feature = "font-ubuntu")]
@@ -78,10 +78,10 @@ impl FontFamily {
                     "resources/fonts/Anonymous_Pro/Anonymous_Pro_Bold.ttf");
                 &DATA
             }
-            #[cfg(feature = "font-camingo_code")]
-            Self::CamingoCode => {
+            #[cfg(feature = "font-source_code_pro")]
+            Self::SourceCodePro => {
                 flate!(static DATA: [u8] from
-                    "resources/fonts/CamingoCode/CamingoCode-Bold.ttf");
+                    "resources/fonts/SourceCodePro/SourceCodePro-Bold.otf");
                 &DATA
             }
 
@@ -107,10 +107,11 @@ impl FontFamily {
                     "resources/fonts/Anonymous_Pro/Anonymous_Pro_Italic.ttf");
                 &DATA
             }
-            #[cfg(feature = "font-camingo_code")]
-            Self::CamingoCode => {
+
+            #[cfg(feature = "font-source_code_pro")]
+            Self::SourceCodePro => {
                 flate!(static DATA: [u8] from
-                    "resources/fonts/CamingoCode/CamingoCode-Italic.ttf");
+                    "resources/fonts/SourceCodePro/SourceCodePro-It.otf");
                 &DATA
             }
 
@@ -136,10 +137,10 @@ impl FontFamily {
                     "resources/fonts/Anonymous_Pro/Anonymous_Pro_Bold_Italic.ttf");
                 &DATA
             }
-            #[cfg(feature = "font-camingo_code")]
-            Self::CamingoCode => {
+            #[cfg(feature = "font-source_code_pro")]
+            Self::SourceCodePro => {
                 flate!(static DATA: [u8] from
-                    "resources/fonts/CamingoCode/CamingoCode-BoldItalic.ttf");
+                    "resources/fonts/SourceCodePro/SourceCodePro-BoldIt.otf");
                 &DATA
             }
 
@@ -173,8 +174,8 @@ impl Display for FontFamily {
             Self::IosevkaTerm => "IosevkaTerm",
             #[cfg(feature = "font-anonymous_pro")]
             Self::AnonymousPro => "AnonymousPro",
-            #[cfg(feature = "font-camingo_code")]
-            Self::CamingoCode => "CamingoCode",
+            #[cfg(feature = "font-source_code_pro")]
+            Self::SourceCodePro => "SourceCodePro",
             #[cfg(feature = "font-ubuntu")]
             Self::Ubuntu => "Ubuntu",
         };

@@ -1,5 +1,24 @@
 use std log
 
+# TODO add licenses
+let fonts = [
+    {
+        name: IoSevkaTerm,
+        feature: font-iosevka_term 
+    },
+    {
+        name: AnonymousPro,
+        feature: font-anonymous_pro 
+    },
+    {
+        name: SourceCodePro,
+        feature: font-source_code_pro 
+    },
+    {
+        name: Ubuntu,
+        feature: font-ubuntu 
+    },
+]
 
 def main [package_file: path] {
     let repo_root = $package_file | path dirname

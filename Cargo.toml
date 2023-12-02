@@ -6,7 +6,7 @@ keywords = ["nushell", "image", "render", "plugin"]
 homepage = "https://github.com/FMotalleb/nu_plugin_image"
 repository = "https://github.com/FMotalleb/nu_plugin_image"
 description = "A nushell plugin to open png images in the shell and save ansi string as images (like tables or ...)"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 readme = "README.md"
 
@@ -29,5 +29,5 @@ default = ["font-iosevka_term"]
 
 font-iosevka_term = []
 font-anonymous_pro = []
-font-camingo_code = []
+font-source_code_pro = []
 font-ubuntu = []
