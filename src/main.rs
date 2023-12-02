@@ -1,5 +1,5 @@
 use nu_plugin::{self, EvaluatedCall, LabeledError};
-use nu_plugin_image::{ansi_to_image, image_to_ansi};
+use nu_plugin_image::{ansi_to_image, image_to_ansi, FontFamily};
 use nu_protocol::{Category, PluginSignature, SyntaxShape, Type, Value};
 
 pub struct Plugin;
@@ -59,6 +59,15 @@ impl nu_plugin::Plugin for Plugin {
                     SyntaxShape::Filepath,
                     "output file path",
                     Some('o'),
+                )
+                .named(
+                    "font",
+                    SyntaxShape::String,
+                    format!(
+                        "Select the font from one of {:?}, by default the first font in the list will be used",
+                        FontFamily::list()
+                    ),
+                    None,
                 )
                 .usage("convert ansi output to image")
                 .input_output_type(Type::String, Type::Nothing)

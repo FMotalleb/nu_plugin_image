@@ -22,3 +22,12 @@ imageproc = "0.23"
 include-flate = "0.3"
 rusttype = "0.9"
 vte = "0.13"
+
+[features]
+
+default = ["font-iosevka_term"]
+
+font-iosevka_term = []
+font-anonymous_pro = []
+font-camingo_code = []
+font-jetbrains = []

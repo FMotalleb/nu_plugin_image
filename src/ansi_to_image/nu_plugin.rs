@@ -1,6 +1,8 @@
 use nu_plugin::{EvaluatedCall, LabeledError};
 use nu_protocol::{Span, Value};
 
+use crate::FontFamily;
+
 use super::ansi_to_image::make_image;
 
 pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, LabeledError> {
@@ -20,7 +22,20 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         },
         _ => None,
     };
-
+    let font = match call.get_flag_value("font").map(|value| match value {
+        Value::String { val, .. } => FontFamily::from_name(val),
+        _ => None,
+    }) {
+        Some(value) => {
+            if let Some(font) = value {
+                font
+            } else {
+                FontFamily::default()
+            }
+        }
+        None => FontFamily::default(),
+    };
+    eprintln!("selected font: {}", font.to_string());
     let out = match call.get_flag_value("output-path").map(|i| i.as_path()) {
         Some(path) if path.is_ok() => path.unwrap(),
         _ => {
@@ -31,7 +46,7 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         }
     };
 
-    make_image(out.as_path(), size, i);
+    make_image(out.as_path(), font, size, i);
 
     Ok(Value::nothing(call.head))
 }
