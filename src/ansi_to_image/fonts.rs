@@ -10,8 +10,8 @@ pub enum FontFamily {
     AnonymousPro,
     #[cfg(feature = "font-camingo_code")]
     CamingoCode,
-    #[cfg(feature = "font-jetbrains")]
-    JetBrains,
+    #[cfg(feature = "font-ubuntu")]
+    Ubuntu,
 }
 
 impl FontFamily {
@@ -31,8 +31,8 @@ impl FontFamily {
         result.push(Self::AnonymousPro);
         #[cfg(feature = "font-camingo_code")]
         result.push(Self::CamingoCode);
-        #[cfg(feature = "font-jetbrains")]
-        result.push(Self::JetBrains);
+        #[cfg(feature = "font-ubuntu")]
+        result.push(Self::Ubuntu);
         result
     }
 
@@ -56,10 +56,10 @@ impl FontFamily {
                     "resources/fonts/CamingoCode/CamingoCode-Regular.ttf");
                 &DATA
             }
-            #[cfg(feature = "font-jetbrains")]
-            Self::JetBrains => {
+            #[cfg(feature = "font-ubuntu")]
+            Self::Ubuntu => {
                 flate!(static DATA: [u8] from
-                    "resources/fonts/JetBrains/JetBrainsMono-Regular.ttf");
+                    "resources/fonts/Ubuntu/UbuntuMono-R.ttf");
                 &DATA
             }
         }
@@ -85,10 +85,10 @@ impl FontFamily {
                 &DATA
             }
 
-            #[cfg(feature = "font-jetbrains")]
-            Self::JetBrains => {
+            #[cfg(feature = "font-ubuntu")]
+            Self::Ubuntu => {
                 flate!(static DATA: [u8] from
-                    "resources/fonts/JetBrains/JetBrainsMono-Bold.ttf");
+                    "resources/fonts/Ubuntu/UbuntuMono-B.ttf");
                 &DATA
             }
         }
@@ -114,10 +114,10 @@ impl FontFamily {
                 &DATA
             }
 
-            #[cfg(feature = "font-jetbrains")]
-            Self::JetBrains => {
+            #[cfg(feature = "font-ubuntu")]
+            Self::Ubuntu => {
                 flate!(static DATA: [u8] from
-                    "resources/fonts/JetBrains/JetBrainsMono-Italic.ttf");
+                    "resources/fonts/Ubuntu/UbuntuMono-RI.ttf");
                 &DATA
             }
         }
@@ -143,10 +143,10 @@ impl FontFamily {
                 &DATA
             }
 
-            #[cfg(feature = "font-jetbrains")]
-            Self::JetBrains => {
+            #[cfg(feature = "font-ubuntu")]
+            Self::Ubuntu => {
                 flate!(static DATA: [u8] from
-                    "resources/fonts/JetBrains/JetBrainsMono-Bold-Italic.ttf");
+                    "resources/fonts/Ubuntu/UbuntuMono-BI.ttf");
                 &DATA
             }
         }
@@ -161,8 +161,8 @@ impl Default for FontFamily {
         return Self::AnonymousPro;
         #[cfg(feature = "font-camingo_code")]
         return Self::CamingoCode;
-        #[cfg(feature = "font-jetbrains")]
-        return Self::JetBrains;
+        #[cfg(feature = "font-ubuntu")]
+        return Self::Ubuntu;
     }
 }
 
@@ -175,8 +175,8 @@ impl Display for FontFamily {
             Self::AnonymousPro => "AnonymousPro",
             #[cfg(feature = "font-camingo_code")]
             Self::CamingoCode => "CamingoCode",
-            #[cfg(feature = "font-jetbrains")]
-            Self::JetBrains => "JetBrains",
+            #[cfg(feature = "font-ubuntu")]
+            Self::Ubuntu => "Ubuntu",
         };
         write!(f, "{}", name)
     }
