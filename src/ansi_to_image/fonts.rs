@@ -1,4 +1,9 @@
-use std::fmt::{self, Display, Formatter};
+use std::{
+    fmt::{self, Display, Formatter},
+    fs::File,
+    io::Read,
+    path::Path,
+};
 
 use include_flate::flate;
 
@@ -12,6 +17,7 @@ pub enum FontFamily {
     SourceCodePro,
     #[cfg(feature = "font-ubuntu")]
     Ubuntu,
+    Custom(String, String, String, String),
 }
 
 impl FontFamily {
@@ -61,6 +67,11 @@ impl FontFamily {
                 flate!(static DATA: [u8] from
                     "resources/fonts/Ubuntu/UbuntuMono-R.ttf");
                 &DATA
+            }
+            Self::Custom(regular, bold, italic, bold_italic) => {
+                return load_file(regular)
+                    .map(|i| i.collect())
+                    .unwrap_or(Self::default().regular())
             }
         }
     }
@@ -181,4 +192,17 @@ impl Display for FontFamily {
         };
         write!(f, "{}", name)
     }
+}
+
+fn load_file(path: String) -> Option<Vec<u8>> {
+    let data = &mut File::open(path);
+    if let Ok(file) = data {
+        let buffer = &mut Vec::new();
+        file.read_to_end(buffer);
+        return Some(buffer.to_owned());
+    } else if let Err(err) = data {
+        eprintln!("{}, cannot open file: {}", path, err);
+    }
+
+    None
 }
