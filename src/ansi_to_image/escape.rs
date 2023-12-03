@@ -166,7 +166,6 @@ impl EscapeSequence {
             37 => Self::ForegroundColor(ColorType::Normal(Color::White)),
 
             39 => Self::DefaultForegroundColor,
-            38 => Self::DefaultForegroundColor,
 
             40 => Self::BackgroundColor(ColorType::Normal(Color::Black)),
             41 => Self::BackgroundColor(ColorType::Normal(Color::Red)),
@@ -177,7 +176,6 @@ impl EscapeSequence {
             46 => Self::BackgroundColor(ColorType::Normal(Color::Cyan)),
             47 => Self::BackgroundColor(ColorType::Normal(Color::White)),
 
-            48 => Self::DefaultBackgroundColor,
             49 => Self::DefaultBackgroundColor,
             50 => Self::DisableProportionalSpacing,
             53 => Self::CrossedOut,
