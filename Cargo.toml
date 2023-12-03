@@ -25,9 +25,9 @@ vte = "0.13"
 
 [features]
 
-default = ["font-iosevka_term"]
-
+default = []
+all-fonts = ["font-iosevka_term", "font-anonymous_pro", "font-ubuntu"]
 font-iosevka_term = []
 font-anonymous_pro = []
-font-source_code_pro = []
+# font-source_code_pro = []
 font-ubuntu = []

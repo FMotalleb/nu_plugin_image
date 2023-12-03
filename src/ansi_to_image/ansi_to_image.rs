@@ -1,5 +1,5 @@
 use image::RgbImage;
-use rusttype::{Font, Scale};
+use rusttype::Scale;
 use std::{
     io::{BufReader, Read},
     path::Path,
