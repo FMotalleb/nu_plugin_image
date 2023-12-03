@@ -165,7 +165,7 @@ impl<'a> Perform for Printer<'a> {
         eprintln!(
             "[csi_dispatch] params={params:?}, intermediates={intermediates:?}, ignore={ignore:?}, char={c:?}"
         );
-        let actions = EscapeSequence::parse_params(params);
+        let actions = EscapeSequence::parse_params(params.iter().flatten().collect::<Vec<_>>());
 
         for action in actions {
             match action {

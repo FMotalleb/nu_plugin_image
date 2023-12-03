@@ -1,7 +1,5 @@
 //! From https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters
 
-use vte::Params;
-
 use crate::ansi_to_image::color::{Color, ColorType};
 
 #[derive(Debug)]
@@ -44,10 +42,10 @@ pub(super) enum EscapeSequence {
 }
 
 impl EscapeSequence {
-    pub(super) fn parse_params(params: &Params) -> Vec<EscapeSequence> {
-        let params_slice = params.iter().flatten().collect::<Vec<_>>();
+    pub(super) fn parse_params(params: Vec<&u16>) -> Vec<EscapeSequence> {
+        // let params_slice: Vec<&u16> = ;
 
-        match params_slice.as_slice() {
+        match params.as_slice() {
             // Set foreground (38) or background (48) color
             [fg_or_bg, 5, n] => {
                 let color = match n {
@@ -100,23 +98,25 @@ impl EscapeSequence {
                     _ => vec![Self::Unimplemented(vec![2, **fg_or_bg, 2, **r, **g, **b])],
                 }
             }
-            [5, fg_or_bg, 2, r, g, b] => {
-                let color = ColorType::Rgb {
-                    field1: (**r as u8, **g as u8, **b as u8),
-                };
-                match fg_or_bg {
-                    // foreground
-                    38 => vec![Self::ForegroundColor(color)],
 
-                    // background
-                    48 => vec![Self::BackgroundColor(color)],
-
-                    _ => vec![Self::Unimplemented(vec![2, **fg_or_bg, 2, **r, **g, **b])],
-                }
-            }
             v => {
-                let flags = v.iter().map(|i| Self::parse_single(&i)).into_iter();
-                return flags.collect();
+                if v.len() > 0 {
+                    match v.split_at(1) {
+                        ([item, ..], rest) => {
+                            // let ve = Vec::from(rest);
+                            let mut result = vec![Self::parse_single(item)];
+                            let next = Vec::from(rest);
+                            for value in Self::parse_params(next) {
+                                result.push(value);
+                            }
+                            return result;
+                        }
+                        _ => {
+                            return vec![];
+                        }
+                    }
+                }
+                return vec![];
             }
         }
     }
