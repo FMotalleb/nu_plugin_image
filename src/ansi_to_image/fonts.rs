@@ -1,9 +1,4 @@
-use std::{
-    fmt::{self, Display, Formatter},
-    fs::File,
-    io::Read,
-    path::Path,
-};
+use std::fmt::{self, Display, Formatter};
 
 use include_flate::flate;
 
@@ -68,7 +63,7 @@ impl FontFamily {
                     "resources/fonts/Ubuntu/UbuntuMono-R.ttf");
                 &DATA
             }
-            Self::Custom(regular, bold, italic, bold_italic) => regular,
+            Self::Custom(regular, _bold, _italic, _bold_italic) => regular,
         }
     }
     pub fn bold(&self) -> &[u8] {
@@ -98,7 +93,7 @@ impl FontFamily {
                     "resources/fonts/Ubuntu/UbuntuMono-B.ttf");
                 &DATA
             }
-            Self::Custom(regular, bold, italic, bold_italic) => bold,
+            Self::Custom(_regular, bold, _italic, _bold_italic) => bold,
         }
     }
     pub fn italic(&self) -> &[u8] {
@@ -129,7 +124,7 @@ impl FontFamily {
                     "resources/fonts/Ubuntu/UbuntuMono-RI.ttf");
                 &DATA
             }
-            Self::Custom(regular, bold, italic, bold_italic) => italic,
+            Self::Custom(_regular, _bold, italic, _bold_italic) => italic,
         }
     }
     pub fn bold_italic(&self) -> &[u8] {
@@ -159,7 +154,7 @@ impl FontFamily {
                     "resources/fonts/Ubuntu/UbuntuMono-BI.ttf");
                 &DATA
             }
-            Self::Custom(regular, bold, italic, bold_italic) => bold_italic,
+            Self::Custom(_regular, _bold, _italic, bold_italic) => bold_italic,
         }
     }
 }
