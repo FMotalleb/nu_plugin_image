@@ -17,7 +17,7 @@ pub enum FontFamily {
     SourceCodePro,
     #[cfg(feature = "font-ubuntu")]
     Ubuntu,
-    Custom(String, String, String, String),
+    Custom(Vec<u8>, Vec<u8>, Vec<u8>, Vec<u8>),
 }
 
 impl FontFamily {
@@ -68,11 +68,7 @@ impl FontFamily {
                     "resources/fonts/Ubuntu/UbuntuMono-R.ttf");
                 &DATA
             }
-            Self::Custom(regular, bold, italic, bold_italic) => {
-                return load_file(regular)
-                    .map(|i| i.collect())
-                    .unwrap_or(Self::default().regular())
-            }
+            Self::Custom(regular, bold, italic, bold_italic) => regular,
         }
     }
     pub fn bold(&self) -> &[u8] {
@@ -102,6 +98,7 @@ impl FontFamily {
                     "resources/fonts/Ubuntu/UbuntuMono-B.ttf");
                 &DATA
             }
+            Self::Custom(regular, bold, italic, bold_italic) => bold,
         }
     }
     pub fn italic(&self) -> &[u8] {
@@ -132,6 +129,7 @@ impl FontFamily {
                     "resources/fonts/Ubuntu/UbuntuMono-RI.ttf");
                 &DATA
             }
+            Self::Custom(regular, bold, italic, bold_italic) => italic,
         }
     }
     pub fn bold_italic(&self) -> &[u8] {
@@ -161,6 +159,7 @@ impl FontFamily {
                     "resources/fonts/Ubuntu/UbuntuMono-BI.ttf");
                 &DATA
             }
+            Self::Custom(regular, bold, italic, bold_italic) => bold_italic,
         }
     }
 }
@@ -189,20 +188,21 @@ impl Display for FontFamily {
             Self::SourceCodePro => "SourceCodePro",
             #[cfg(feature = "font-ubuntu")]
             Self::Ubuntu => "Ubuntu",
+            _ => "Custom",
         };
         write!(f, "{}", name)
     }
 }
 
-fn load_file(path: String) -> Option<Vec<u8>> {
-    let data = &mut File::open(path);
-    if let Ok(file) = data {
-        let buffer = &mut Vec::new();
-        file.read_to_end(buffer);
-        return Some(buffer.to_owned());
-    } else if let Err(err) = data {
-        eprintln!("{}, cannot open file: {}", path, err);
-    }
+// fn load_file(path: String) -> Option<Vec<u8>> {
+//     let data = &mut File::open(path);
+//     if let Ok(file) = data {
+//         let buffer = &mut Vec::new();
+//         file.read_to_end(buffer);
+//         return Some(buffer.to_owned());
+//     } else if let Err(err) = data {
+//         eprintln!("{}, cannot open file: {}", path, err);
+//     }
 
-    None
-}
+//     None
+// }
