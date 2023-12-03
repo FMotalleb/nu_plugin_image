@@ -69,6 +69,10 @@ impl nu_plugin::Plugin for Plugin {
                     ),
                     None,
                 )
+                .named("font-regular", SyntaxShape::Filepath, "custom font Regular font path", None)
+                .named("font-bold", SyntaxShape::Filepath, "custom font Bold font path", None)
+                .named("font-italic", SyntaxShape::Filepath, "custom font Italic font path", None)
+                .named("font-bold-italic", SyntaxShape::Filepath, "custom font Bold Italic font path", None)
                 .usage("convert ansi output to image")
                 .input_output_type(Type::String, Type::Nothing)
                 .category(Category::Conversions),
