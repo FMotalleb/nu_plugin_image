@@ -3,7 +3,7 @@ use std::fmt::{self, Display, Formatter};
 use include_flate::flate;
 
 #[derive(Debug)]
-pub enum FontFamily {
+pub enum FontFamilyEnum {
     #[cfg(feature = "font-iosevka_term")]
     IosevkaTerm,
     #[cfg(feature = "font-anonymous_pro")]
@@ -15,7 +15,7 @@ pub enum FontFamily {
     Custom(Vec<u8>, Vec<u8>, Vec<u8>, Vec<u8>),
 }
 
-impl FontFamily {
+impl FontFamilyEnum {
     pub fn from_name(name: String) -> Option<Self> {
         for item in Self::list().into_iter() {
             if item.to_string() == name {
@@ -159,7 +159,7 @@ impl FontFamily {
     }
 }
 
-impl Default for FontFamily {
+impl Default for FontFamilyEnum {
     fn default() -> Self {
         #[cfg(feature = "font-iosevka_term")]
         return Self::IosevkaTerm;
@@ -172,7 +172,7 @@ impl Default for FontFamily {
     }
 }
 
-impl Display for FontFamily {
+impl Display for FontFamilyEnum {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         let name = match self {
             #[cfg(feature = "font-iosevka_term")]

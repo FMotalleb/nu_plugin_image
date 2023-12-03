@@ -7,7 +7,7 @@ use std::{
 use vte::Parser;
 
 use crate::ansi_to_image::{
-    fonts::FontFamily,
+    font_family::FontFamily,
     palette::Palette,
     printer::{self, Settings},
 };
@@ -20,10 +20,10 @@ pub fn make_image(
 ) {
     // let  = FontFamily::default();
 
-    let font = Font::try_from_bytes(font_family.regular()).unwrap();
-    let font_bold = Font::try_from_bytes(font_family.bold()).unwrap();
-    let font_italic = Font::try_from_bytes(font_family.italic()).unwrap();
-    let font_italic_bold = Font::try_from_bytes(font_family.bold_italic()).unwrap();
+    let font = font_family.regular;
+    let font_bold = font_family.bold;
+    let font_italic = font_family.italic;
+    let font_italic_bold = font_family.bold_italic;
 
     let font_height = 50.0;
     let scale = Scale {

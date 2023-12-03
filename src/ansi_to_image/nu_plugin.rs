@@ -23,7 +23,7 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         _ => None,
     };
     let font = match call.get_flag_value("font").map(|value| match value {
-        Value::String { val, .. } => FontFamily::from_name(val),
+        Value::String { val, .. } => Some(FontFamily::from_name(val)),
         _ => None,
     }) {
         Some(value) => {
