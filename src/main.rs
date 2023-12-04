@@ -1,6 +1,6 @@
 use nu_plugin::{self, EvaluatedCall, LabeledError};
-use nu_plugin_image::{ansi_to_image, image_to_ansi, FontFamily};
-use nu_protocol::{Category, PluginSignature, SyntaxShape, Type, Value};
+use nu_plugin_image::{ansi_to_image, image_to_ansi, FontFamily, Palette};
+use nu_protocol::{Category, PluginExample, PluginSignature, SyntaxShape, Type, Value};
 
 pub struct Plugin;
 
@@ -60,6 +60,7 @@ impl nu_plugin::Plugin for Plugin {
                     "output file path",
                     Some('o'),
                 )
+                .named("theme",SyntaxShape::String,format!("select theme of the output, one of: {:?}\n\t\tby default uses `vscode` theme and you can mix this flag with custom theme colors every other colors will be from the selected theme",Palette::list()),Some('t'))
                 .named(
                     "font",
                     SyntaxShape::String,
@@ -69,12 +70,45 @@ impl nu_plugin::Plugin for Plugin {
                     ),
                     None,
                 )
-                .named("font-regular", SyntaxShape::Filepath, "custom font Regular font path", None)
-                .named("font-bold", SyntaxShape::Filepath, "custom font Bold font path", None)
-                .named("font-italic", SyntaxShape::Filepath, "custom font Italic font path", None)
-                .named("font-bold-italic", SyntaxShape::Filepath, "custom font Bold Italic font path", None)
-                .usage("convert ansi output to image")
+                .named("custom-font-regular", SyntaxShape::Filepath, "custom font Regular font path", None)
+                .named("custom-font-bold", SyntaxShape::Filepath, "custom font Bold font path", None)
+                .named("custom-font-italic", SyntaxShape::Filepath, "custom font Italic font path", None)
+                .named("custom-font-bold_italic", SyntaxShape::Filepath, "custom font Bold Italic font path", None)
+                .named("custom-theme-fg", SyntaxShape::Int, "custom foreground color in hex format (0x040404)", None)
+                .named("custom-theme-bg", SyntaxShape::Int, "custom background color in hex format (0x040404)", None)
+                .named("custom-theme-black", SyntaxShape::Int, "custom black color in hex format (0x040404)", None)
+                .named("custom-theme-red", SyntaxShape::Int, "custom red color in hex format (0x040404)", None)
+                .named("custom-theme-green", SyntaxShape::Int, "custom green color in hex format (0x040404)", None)
+                .named("custom-theme-yellow", SyntaxShape::Int, "custom yellow color in hex format (0x040404)", None)
+                .named("custom-theme-blue", SyntaxShape::Int, "custom blue color in hex format (0x040404)", None)
+                .named("custom-theme-magenta", SyntaxShape::Int, "custom magenta color in hex format (0x040404)", None)
+                .named("custom-theme-cyan", SyntaxShape::Int, "custom cyan color in hex format (0x040404)", None)
+                .named("custom-theme-white", SyntaxShape::Int, "custom white color in hex format (0x040404)", None)
+                .named("custom-theme-bright_black", SyntaxShape::Int, "custom bright black color in hex format (0x040404)", None)
+                .named("custom-theme-bright_red", SyntaxShape::Int, "custom bright red color in hex format (0x040404)", None)
+                .named("custom-theme-bright_green", SyntaxShape::Int, "custom bright green color in hex format (0x040404)", None)
+                .named("custom-theme-bright_yellow", SyntaxShape::Int, "custom bright yellow color in hex format (0x040404)", None)
+                .named("custom-theme-bright_blue", SyntaxShape::Int, "custom bright blue color in hex format (0x040404)", None)
+                .named("custom-theme-bright_magenta", SyntaxShape::Int, "custom bright magenta color in hex format (0x040404)", None)
+                .named("custom-theme-bright_cyan", SyntaxShape::Int, "custom bright cyan color in hex format (0x040404)", None)
+                .named("custom-theme-bright_white", SyntaxShape::Int, "custom bright white color in hex format (0x040404)", None)
+                .usage("converts ansi string into png image")
+                .extra_usage("if you change font and theme they will be used as base theme of the output and every custom flag you provide will override the selected theme or font")
                 .input_output_type(Type::String, Type::Nothing)
+                .plugin_examples(
+                    vec![
+                        PluginExample{
+                            description: "creates image of `ls` command's output and save it in the `ls.png` file".to_string(),
+                            example: "ls | table -c | to png --theme ubuntu --font Ubuntu --output-path ls.png".to_string(),
+                            result: None,
+                        },
+                        PluginExample{
+                            description: "creates image of `ls` command's output and save it in the `ls.png` file with custom greenish background color".to_string(),
+                            example: "ls | table -c | to png --theme ubuntu --font Ubuntu --custom-theme-bg 0x112411 --output-path ls.png".to_string(),
+                            result: None, 
+                        },
+                    ]
+                )
                 .category(Category::Conversions),
         ]
     }

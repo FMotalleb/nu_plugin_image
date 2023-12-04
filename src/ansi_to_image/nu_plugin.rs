@@ -6,7 +6,7 @@ use rusttype::Font;
 
 use crate::FontFamily;
 
-use super::ansi_to_image::make_image;
+use super::{ansi_to_image::make_image, palette::Palette};
 
 pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, LabeledError> {
     let i: &[u8] = match input.as_binary().ok() {
@@ -26,7 +26,7 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         _ => None,
     };
     let font: FontFamily<'_> = resolve_font(call);
-    eprintln!("selected font: {}", font.to_string());
+    // eprintln!("selected font: {}", font.to_string());
     let out = match call.get_flag_value("output-path").map(|i| i.as_path()) {
         Some(path) if path.is_ok() => path.unwrap(),
         _ => {
@@ -37,7 +37,20 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         }
     };
 
-    make_image(out.as_path(), font, size, i);
+    let theme = match call.get_flag_value("theme").map(|i| i.as_string()) {
+        Some(Ok(name)) => {
+            if let Some(theme) = Palette::from_name(name) {
+                theme
+            } else {
+                eprintln!("No theme found that matches the given name");
+                Palette::Vscode
+            }
+        }
+        _ => Palette::Vscode,
+    };
+    let theme = load_custom_theme(call, theme);
+
+    make_image(out.as_path(), font, size, i, theme);
 
     Ok(Value::nothing(call.head))
 }
@@ -91,4 +104,40 @@ fn make_params_err(text: String, span: Option<Span>) -> LabeledError {
         msg: text,
         span: span,
     };
+}
+
+fn load_custom_theme(call: &EvaluatedCall, theme: Palette) -> Palette {
+    let result = theme.palette().copy_with(
+        read_hex_to_array(call, "custom-theme-fg"),
+        read_hex_to_array(call, "custom-theme-bg"),
+        read_hex_to_array(call, "custom-theme-black"),
+        read_hex_to_array(call, "custom-theme-red"),
+        read_hex_to_array(call, "custom-theme-green"),
+        read_hex_to_array(call, "custom-theme-yellow"),
+        read_hex_to_array(call, "custom-theme-blue"),
+        read_hex_to_array(call, "custom-theme-magenta"),
+        read_hex_to_array(call, "custom-theme-cyan"),
+        read_hex_to_array(call, "custom-theme-white"),
+        read_hex_to_array(call, "custom-theme-bright_black"),
+        read_hex_to_array(call, "custom-theme-bright_red"),
+        read_hex_to_array(call, "custom-theme-bright_green"),
+        read_hex_to_array(call, "custom-theme-bright_yellow"),
+        read_hex_to_array(call, "custom-theme-bright_blue"),
+        read_hex_to_array(call, "custom-theme-bright_magenta"),
+        read_hex_to_array(call, "custom-theme-bright_cyan"),
+        read_hex_to_array(call, "custom-theme-bright_white"),
+    );
+    Palette::Custom(result)
+}
+fn read_hex_to_array(call: &EvaluatedCall, name: &str) -> Option<[u8; 3]> {
+    if let Some(Value::Int { val, .. }) = call.get_flag_value(name) {
+        return Some(hex_to_rgb(val.into()));
+    }
+    None
+}
+fn hex_to_rgb(hex: i64) -> [u8; 3] {
+    let r = ((hex >> 16) & 0xFF) as u8;
+    let g = ((hex >> 8) & 0xFF) as u8;
+    let b = (hex & 0xFF) as u8;
+    [r, g, b]
 }
