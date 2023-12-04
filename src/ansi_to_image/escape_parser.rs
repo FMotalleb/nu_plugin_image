@@ -135,14 +135,14 @@ impl EscapeSequence {
 
                 75 => Self::NeitherSuperscriptNorSubscript,
 
-                90 => Self::BackgroundColor(ColorType::Bright(Color::Black)),
-                91 => Self::BackgroundColor(ColorType::Bright(Color::Red)),
-                92 => Self::BackgroundColor(ColorType::Bright(Color::Green)),
-                93 => Self::BackgroundColor(ColorType::Bright(Color::Yellow)),
-                94 => Self::BackgroundColor(ColorType::Bright(Color::Blue)),
-                95 => Self::BackgroundColor(ColorType::Bright(Color::Magenta)),
-                96 => Self::BackgroundColor(ColorType::Bright(Color::Cyan)),
-                97 => Self::BackgroundColor(ColorType::Bright(Color::White)),
+                90 => Self::ForegroundColor(ColorType::Bright(Color::Black)),
+                91 => Self::ForegroundColor(ColorType::Bright(Color::Red)),
+                92 => Self::ForegroundColor(ColorType::Bright(Color::Green)),
+                93 => Self::ForegroundColor(ColorType::Bright(Color::Yellow)),
+                94 => Self::ForegroundColor(ColorType::Bright(Color::Blue)),
+                95 => Self::ForegroundColor(ColorType::Bright(Color::Magenta)),
+                96 => Self::ForegroundColor(ColorType::Bright(Color::Cyan)),
+                97 => Self::ForegroundColor(ColorType::Bright(Color::White)),
 
                 100 => Self::BackgroundColor(ColorType::Bright(Color::Black)),
                 101 => Self::BackgroundColor(ColorType::Bright(Color::Red)),
