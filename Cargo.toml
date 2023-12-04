@@ -1,33 +1,39 @@
-[package]
-name = "nu_plugin_image"
-license = "MIT"
-authors = ["Motalleb Fallahnezhad <fmotalleb@gmail.com>"]
-keywords = ["nushell", "image", "render", "plugin"]
-homepage = "https://github.com/FMotalleb/nu_plugin_image"
-repository = "https://github.com/FMotalleb/nu_plugin_image"
-description = "A nushell plugin to open png images in the shell and save ansi string as images (like tables or ...)"
-version = "0.1.1"
-edition = "2021"
-readme = "README.md"
-
 [dependencies]
-nu-plugin = { version = "0.87.1" }
-nu-protocol = { version = "0.87.1", features = ["plugin"] }
-image = "0.24.7"
-terminal_size = "0.3.0"
 getopts = "0.2.21"
-unicode-segmentation = "1.8.0"
-clap = { version = "4", features = ["derive"] }
+image = "0.24.7"
 imageproc = "0.23"
 include-flate = "0.3"
 rusttype = "0.9"
+terminal_size = "0.3.0"
+unicode-segmentation = "1.10.1"
 vte = "0.13"
 
-[features]
+[dependencies.clap]
+features = ["derive"]
+version = "4"
 
-default = []
+[dependencies.nu-plugin]
+version = "0.87.1"
+
+[dependencies.nu-protocol]
+features = ["plugin"]
+version = "0.87.1"
+
+[features]
 all-fonts = ["font-iosevka_term", "font-anonymous_pro", "font-ubuntu"]
-font-iosevka_term = []
+default = []
 font-anonymous_pro = []
-# font-source_code_pro = []
+font-iosevka_term = []
 font-ubuntu = []
+
+[package]
+authors = ["Motalleb Fallahnezhad <fmotalleb@gmail.com>"]
+description = "A nushell plugin to open png images in the shell and save ansi string as images (like tables or ...)"
+edition = "2021"
+homepage = "https://github.com/FMotalleb/nu_plugin_image"
+keywords = ["nushell", "image", "render", "plugin"]
+license = "MIT"
+name = "nu_plugin_image"
+readme = "README.md"
+repository = "https://github.com/FMotalleb/nu_plugin_image"
+version = "0.1.2"
