@@ -103,7 +103,12 @@ impl EscapeSequence {
                 37 => Self::ForegroundColor(ColorType::Normal(Color::White)),
                 38 => match iter.next() {
                     Some(mode) => Self::ForegroundColor(parse_color(mode, iter)),
-                    None => Self::Ignore, // TODO must log the error (this field is mandatory)
+                    None => {
+                        eprintln!(
+                            "[SEQUENCE_PARSER] foreground color mode is not supplied, parse_color(null, ...)",
+                        );
+                        Self::Ignore
+                    }
                 },
                 39 => Self::DefaultForegroundColor,
 
@@ -117,7 +122,12 @@ impl EscapeSequence {
                 47 => Self::BackgroundColor(ColorType::Normal(Color::White)),
                 48 => match iter.next() {
                     Some(mode) => Self::BackgroundColor(parse_color(mode, iter)),
-                    None => Self::Ignore, // TODO must log the error (this field is mandatory)
+                    None => {
+                        eprintln!(
+                            "[SEQUENCE_PARSER] background color mode is not supplied, parse_color(null, ...)",
+                        );
+                        Self::Ignore
+                    }
                 },
                 49 => Self::DefaultBackgroundColor,
                 50 => Self::DisableProportionalSpacing,
@@ -177,24 +187,40 @@ fn parse_color(mode: &u16, iter: &mut Iter<&u16>) -> ColorType {
                     // These are fixed colors and could be used like ansi 38;5;numberm or 48;5;numberm
                     16..=255 => ColorType::Fixed(**color as u8),
 
-                    _ => return ColorType::PrimaryForeground, // TODO must panic here
+                    v => {
+                        eprintln!("[COLOR_PARSER] fixed color value out of range, parse_fixed_color(code: {})",v);
+                        return ColorType::PrimaryForeground;
+                    }
                 };
                 return color;
             } else {
-                return ColorType::PrimaryForeground; // TODO must panic here
+                eprintln!(
+                    "[COLOR_PARSER] fixed color value not supplied, parse_fixed_color(code: null)"
+                );
+                return ColorType::PrimaryForeground;
             }
         }
-        2 => {
-            match (iter.next(), iter.next(), iter.next()) {
-                (Some(r), Some(g), Some(b)) => {
-                    let color = ColorType::Rgb {
-                        field1: (**r as u8, **g as u8, **b as u8),
-                    };
-                    return color;
-                }
-                _ => return ColorType::PrimaryForeground, // TODO must panic here
+        2 => match (iter.next(), iter.next(), iter.next()) {
+            (Some(r), Some(g), Some(b)) => {
+                let color = ColorType::Rgb {
+                    field1: (**r as u8, **g as u8, **b as u8),
+                };
+                return color;
             }
+            (r, g, b) => {
+                eprintln!("[COLOR_PARSER] rgb color value not supplied (correctly), parse_rgb_color({}, {}, {})",
+                r.map(|i| i.to_string() ).unwrap_or("null".to_string()),
+                g.map(|i| i.to_string() ).unwrap_or("null".to_string()),
+                b.map(|i| i.to_string() ).unwrap_or("null".to_string()));
+                return ColorType::PrimaryForeground;
+            }
+        },
+        v => {
+            eprintln!(
+                "[COLOR_PARSER] color mode is not supplied correctly, parse_color({}, ...)",
+                v
+            );
+            return ColorType::PrimaryForeground;
         }
-        _ => return ColorType::PrimaryForeground, // TODO must panic here
     }
 }
