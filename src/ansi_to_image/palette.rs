@@ -87,7 +87,7 @@ fn palette_custom() -> PaletteData {
 
         black: [44, 44, 44],
         red: [198, 40, 40],
-        green: [85, 139, 46],
+        green: [85, 200, 46],
         yellow: [249, 168, 37],
         blue: [21, 101, 193],
         magenta: [168, 37, 191],
@@ -95,10 +95,10 @@ fn palette_custom() -> PaletteData {
         white: [255, 255, 255],
 
         bright_black: [44, 44, 44],
-        bright_red: [198, 40, 40],
-        bright_green: [85, 139, 46],
-        bright_yellow: [249, 168, 37],
-        bright_blue: [21, 101, 193],
+        bright_red: [255, 0, 0],
+        bright_green: [0, 255, 0],
+        bright_yellow: [249, 200, 37],
+        bright_blue: [21, 101, 255],
         bright_magenta: [168, 37, 191],
         bright_cyan: [0, 131, 143],
         bright_white: [255, 255, 255],
