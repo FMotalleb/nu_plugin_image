@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 
 use crate::ansi_to_image::color::{Color, ColorType};
-
+type ColorOption = Option<[u8; 3]>;
 #[allow(dead_code)]
 #[derive(Debug)]
 pub enum Palette {
@@ -15,10 +15,11 @@ pub enum Palette {
     WinTerminal,
     Win10,
     WinPs,
+    Custom(PaletteData),
     Test,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct PaletteData {
     pub primary_foreground: [u8; 3],
     pub primary_background: [u8; 3],
@@ -43,9 +44,109 @@ pub struct PaletteData {
 
     pub fixed: [[u8; 3]; 256],
 }
+impl PaletteData {
+    pub fn copy_with(
+        &self,
+        primary_foreground: ColorOption,
+        primary_background: ColorOption,
+
+        black: ColorOption,
+        red: ColorOption,
+        green: ColorOption,
+        yellow: ColorOption,
+        blue: ColorOption,
+        magenta: ColorOption,
+        cyan: ColorOption,
+        white: ColorOption,
+
+        bright_black: ColorOption,
+        bright_red: ColorOption,
+        bright_green: ColorOption,
+        bright_yellow: ColorOption,
+        bright_blue: ColorOption,
+        bright_magenta: ColorOption,
+        bright_cyan: ColorOption,
+        bright_white: ColorOption,
+    ) -> PaletteData {
+        let result = &mut self.clone();
+        if let Some(fg) = primary_foreground {
+            result.primary_foreground = fg;
+        }
+
+        if let Some(bg) = primary_background {
+            result.primary_background = bg;
+        }
+
+        if let Some(color) = black {
+            result.black = color;
+        }
+
+        if let Some(color) = red {
+            result.red = color;
+        }
+
+        if let Some(color) = green {
+            result.green = color;
+        }
+
+        if let Some(color) = yellow {
+            result.yellow = color;
+        }
+
+        if let Some(color) = blue {
+            result.blue = color;
+        }
+
+        if let Some(color) = magenta {
+            result.magenta = color;
+        }
+
+        if let Some(color) = cyan {
+            result.cyan = color;
+        }
+
+        if let Some(color) = white {
+            result.white = color;
+        }
+
+        if let Some(color) = bright_black {
+            result.bright_black = color;
+        }
+
+        if let Some(color) = bright_red {
+            result.bright_red = color;
+        }
+
+        if let Some(color) = bright_green {
+            result.bright_green = color;
+        }
+
+        if let Some(color) = bright_yellow {
+            result.bright_yellow = color;
+        }
+
+        if let Some(color) = bright_blue {
+            result.bright_blue = color;
+        }
+
+        if let Some(color) = bright_magenta {
+            result.bright_magenta = color;
+        }
+
+        if let Some(color) = bright_cyan {
+            result.bright_cyan = color;
+        }
+
+        if let Some(color) = bright_white {
+            result.bright_white = color;
+        }
+
+        result.to_owned()
+    }
+}
 
 impl Palette {
-    fn palette(&self) -> PaletteData {
+    pub(super) fn palette(&self) -> PaletteData {
         match self {
             Palette::Vscode => palette_vscode(),
             Palette::Xterm => palette_xterm(),
@@ -58,6 +159,7 @@ impl Palette {
             Palette::Win10 => palette_win_10(),
             Palette::WinPs => palette_win_power_shell(),
             Palette::Test => palette_test(),
+            Palette::Custom(p) => *p,
         }
     }
     pub(super) fn from_name(name: String) -> Option<Palette> {
@@ -92,6 +194,7 @@ impl Palette {
             "win_ps".to_string(),
         ]
     }
+
     pub(super) fn get_color(&self, color: ColorType) -> [u8; 3] {
         let palette = self.palette();
 

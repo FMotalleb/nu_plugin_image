@@ -48,6 +48,8 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         }
         _ => Palette::Vscode,
     };
+    let theme = load_custom_theme(call, theme);
+
     make_image(out.as_path(), font, size, i, theme);
 
     Ok(Value::nothing(call.head))
@@ -102,4 +104,40 @@ fn make_params_err(text: String, span: Option<Span>) -> LabeledError {
         msg: text,
         span: span,
     };
+}
+
+fn load_custom_theme(call: &EvaluatedCall, theme: Palette) -> Palette {
+    let result = theme.palette().copy_with(
+        read_hex_to_array(call, "theme_custom_fg"),
+        read_hex_to_array(call, "theme_custom_bg"),
+        read_hex_to_array(call, "theme_custom_black"),
+        read_hex_to_array(call, "theme_custom_red"),
+        read_hex_to_array(call, "theme_custom_green"),
+        read_hex_to_array(call, "theme_custom_yellow"),
+        read_hex_to_array(call, "theme_custom_blue"),
+        read_hex_to_array(call, "theme_custom_magenta"),
+        read_hex_to_array(call, "theme_custom_cyan"),
+        read_hex_to_array(call, "theme_custom_white"),
+        read_hex_to_array(call, "theme_custom_bright_black"),
+        read_hex_to_array(call, "theme_custom_bright_red"),
+        read_hex_to_array(call, "theme_custom_bright_green"),
+        read_hex_to_array(call, "theme_custom_bright_yellow"),
+        read_hex_to_array(call, "theme_custom_bright_blue"),
+        read_hex_to_array(call, "theme_custom_bright_magenta"),
+        read_hex_to_array(call, "theme_custom_bright_cyan"),
+        read_hex_to_array(call, "theme_custom_bright_white"),
+    );
+    Palette::Custom(result)
+}
+fn read_hex_to_array(call: &EvaluatedCall, name: &str) -> Option<[u8; 3]> {
+    if let Some(Value::Int { val, .. }) = call.get_flag_value(name) {
+        return Some(hex_to_rgb(val.into()));
+    }
+    None
+}
+fn hex_to_rgb(hex: i64) -> [u8; 3] {
+    let r = ((hex >> 16) & 0xFF) as u8;
+    let g = ((hex >> 8) & 0xFF) as u8;
+    let b = (hex & 0xFF) as u8;
+    [r, g, b]
 }
