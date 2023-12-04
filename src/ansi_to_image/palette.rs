@@ -70,6 +70,7 @@ impl Palette {
             "putty" => Some(Palette::Putty),
             "winxp" => Some(Palette::WinXp),
             "terminal" => Some(Palette::WinTerminal),
+            "winterm" => Some(Palette::WinTerminal),
             "win10" => Some(Palette::Win10),
             "win_power-shell" => Some(Palette::WinPs),
             "win_ps" => Some(Palette::WinPs),
@@ -131,7 +132,7 @@ fn palette_vscode() -> PaletteData {
         // primary_background: "0x161616".parse().unwrap()
         // primary_foreground: "0xf2f2f2".parse().unwrap()
         primary_foreground: [229, 229, 229],
-        primary_background: [0, 0, 0],
+        primary_background: [24, 24, 24],
 
         black: [0, 0, 0],
         red: [205, 49, 49],
