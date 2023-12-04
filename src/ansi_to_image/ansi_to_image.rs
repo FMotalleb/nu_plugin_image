@@ -17,6 +17,7 @@ pub fn make_image(
     font_family: FontFamily,
     png_width: Option<u32>,
     input: &[u8],
+    palette: Palette,
 ) {
     // let  = FontFamily::default();
 
@@ -31,7 +32,7 @@ pub fn make_image(
         y: font_height,
     };
 
-    let palette = Palette::Custom;
+    // let palette = Palette::Vscode;
 
     let mut state_machine = Parser::new();
     let mut performer = printer::new(Settings {

@@ -1,5 +1,5 @@
 use nu_plugin::{self, EvaluatedCall, LabeledError};
-use nu_plugin_image::{ansi_to_image, image_to_ansi, FontFamily};
+use nu_plugin_image::{ansi_to_image, image_to_ansi, FontFamily, Palette};
 use nu_protocol::{Category, PluginSignature, SyntaxShape, Type, Value};
 
 pub struct Plugin;
@@ -60,6 +60,7 @@ impl nu_plugin::Plugin for Plugin {
                     "output file path",
                     Some('o'),
                 )
+                .named("theme",SyntaxShape::String,format!("select theme of the output, one of: {:?}",Palette::list()),Some('t'))
                 .named(
                     "font",
                     SyntaxShape::String,

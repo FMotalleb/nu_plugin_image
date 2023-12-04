@@ -6,7 +6,7 @@ use rusttype::Font;
 
 use crate::FontFamily;
 
-use super::ansi_to_image::make_image;
+use super::{ansi_to_image::make_image, palette::Palette};
 
 pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, LabeledError> {
     let i: &[u8] = match input.as_binary().ok() {
@@ -26,7 +26,7 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         _ => None,
     };
     let font: FontFamily<'_> = resolve_font(call);
-    eprintln!("selected font: {}", font.to_string());
+    // eprintln!("selected font: {}", font.to_string());
     let out = match call.get_flag_value("output-path").map(|i| i.as_path()) {
         Some(path) if path.is_ok() => path.unwrap(),
         _ => {
@@ -37,7 +37,18 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         }
     };
 
-    make_image(out.as_path(), font, size, i);
+    let theme = match call.get_flag_value("theme").map(|i| i.as_string()) {
+        Some(Ok(name)) => {
+            if let Some(theme) = Palette::from_name(name) {
+                theme
+            } else {
+                eprintln!("No theme found that matches the given name");
+                Palette::Vscode
+            }
+        }
+        _ => Palette::Vscode,
+    };
+    make_image(out.as_path(), font, size, i, theme);
 
     Ok(Value::nothing(call.head))
 }

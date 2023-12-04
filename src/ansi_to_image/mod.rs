@@ -8,3 +8,4 @@ mod palette;
 mod printer;
 pub use font_family::FontFamily;
 pub use nu_plugin::ansi_to_image;
+pub use palette::Palette;
