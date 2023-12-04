@@ -7,6 +7,14 @@ use crate::ansi_to_image::color::{Color, ColorType};
 pub enum Palette {
     Vscode,
     Xterm,
+    Eclipse,
+    Ubuntu,
+    MIRC,
+    Putty,
+    WinXp,
+    WinTerminal,
+    Win10,
+    WinPs,
     Test,
 }
 
@@ -41,6 +49,14 @@ impl Palette {
         match self {
             Palette::Vscode => palette_vscode(),
             Palette::Xterm => palette_xterm(),
+            Palette::Ubuntu => palette_ubuntu(),
+            Palette::Eclipse => palette_eclipse(),
+            Palette::MIRC => palette_mirc(),
+            Palette::Putty => palette_putty(),
+            Palette::WinXp => palette_win_xp(),
+            Palette::WinTerminal => palette_terminal_app(),
+            Palette::Win10 => palette_win_10(),
+            Palette::WinPs => palette_win_power_shell(),
             Palette::Test => palette_test(),
         }
     }
@@ -48,11 +64,32 @@ impl Palette {
         match name.to_lowercase().as_str() {
             "vscode" => Some(Palette::Vscode),
             "xterm" => Some(Palette::Xterm),
+            "eclipse" => Some(Palette::Eclipse),
+            "ubuntu" => Some(Palette::Ubuntu),
+            "mirc" => Some(Palette::MIRC),
+            "putty" => Some(Palette::Putty),
+            "winxp" => Some(Palette::WinXp),
+            "terminal" => Some(Palette::WinTerminal),
+            "win10" => Some(Palette::Win10),
+            "win_power-shell" => Some(Palette::WinPs),
+            "win_ps" => Some(Palette::WinPs),
             _ => None,
         }
     }
     pub fn list() -> Vec<String> {
-        vec!["vscode".to_string(), "xterm".to_string()]
+        vec![
+            "vscode".to_string(),
+            "xterm".to_string(),
+            "ubuntu".to_string(),
+            "eclipse".to_string(),
+            "mirc".to_string(),
+            "putty".to_string(),
+            "winxp".to_string(),
+            "terminal".to_string(),
+            "win10".to_string(),
+            "win_power-shell".to_string(),
+            "win_ps".to_string(),
+        ]
     }
     pub(super) fn get_color(&self, color: ColorType) -> [u8; 3] {
         let palette = self.palette();
@@ -135,9 +172,233 @@ fn palette_xterm() -> PaletteData {
 
         bright_black: [127, 127, 127],
         bright_red: [255, 0, 0],
+        bright_green: [0, 255, 0],
+        bright_yellow: [255, 255, 0],
+        bright_blue: [0, 0, 252],
+        bright_magenta: [255, 0, 255],
+        bright_cyan: [0, 255, 255],
+        bright_white: [255, 255, 255],
+
+        fixed: fixed_colors(),
+    }
+}
+fn palette_eclipse() -> PaletteData {
+    PaletteData {
+        // primary_background: "0x161616".parse().unwrap()
+        // primary_foreground: "0xf2f2f2".parse().unwrap()
+        primary_foreground: [229, 229, 229],
+        primary_background: [0, 0, 0],
+
+        black: [0, 0, 0],
+        red: [205, 0, 0],
+        green: [0, 205, 0],
+        yellow: [205, 205, 0],
+        blue: [0, 0, 238],
+        magenta: [205, 0, 205],
+        cyan: [0, 205, 205],
+        white: [229, 229, 229],
+
+        bright_black: [0, 0, 0],
+        bright_red: [255, 0, 0],
+        bright_green: [0, 255, 0],
+        bright_yellow: [255, 255, 0],
+        bright_blue: [0, 0, 252],
+        bright_magenta: [255, 0, 255],
+        bright_cyan: [0, 255, 255],
+        bright_white: [255, 255, 255],
+
+        fixed: fixed_colors(),
+    }
+}
+fn palette_ubuntu() -> PaletteData {
+    PaletteData {
+        // primary_background: "0x161616".parse().unwrap()
+        // primary_foreground: "0xf2f2f2".parse().unwrap()
+        primary_foreground: [204, 204, 204],
+        primary_background: [1, 1, 1],
+
+        black: [1, 1, 1],
+        red: [222, 56, 43],
+        green: [57, 181, 74],
+        yellow: [255, 199, 6],
+        blue: [0, 111, 184],
+        magenta: [118, 38, 113],
+        cyan: [44, 181, 233],
+        white: [204, 204, 204],
+
+        bright_black: [128, 128, 128],
+        bright_red: [255, 0, 0],
+        bright_green: [0, 255, 0],
+        bright_yellow: [255, 255, 0],
+        bright_blue: [0, 0, 255],
+        bright_magenta: [255, 0, 255],
+        bright_cyan: [0, 255, 255],
+        bright_white: [255, 255, 255],
+
+        fixed: fixed_colors(),
+    }
+}
+fn palette_mirc() -> PaletteData {
+    PaletteData {
+        // primary_background: "0x161616".parse().unwrap()
+        // primary_foreground: "0xf2f2f2".parse().unwrap()
+        primary_foreground: [210, 210, 210],
+        primary_background: [0, 0, 0],
+
+        black: [0, 0, 0],
+        red: [127, 0, 0],
+        green: [0, 147, 0],
+        yellow: [252, 127, 0],
+        blue: [0, 0, 127],
+        magenta: [156, 0, 156],
+        cyan: [0, 147, 147],
+        white: [210, 210, 210],
+
+        bright_black: [127, 127, 127],
+        bright_red: [255, 0, 0],
         bright_green: [0, 252, 0],
         bright_yellow: [255, 255, 0],
         bright_blue: [0, 0, 252],
+        bright_magenta: [255, 0, 255],
+        bright_cyan: [0, 255, 255],
+        bright_white: [255, 255, 255],
+
+        fixed: fixed_colors(),
+    }
+}
+fn palette_putty() -> PaletteData {
+    PaletteData {
+        // primary_background: "0x161616".parse().unwrap()
+        // primary_foreground: "0xf2f2f2".parse().unwrap()
+        primary_foreground: [187, 187, 187],
+        primary_background: [0, 0, 0],
+
+        black: [0, 0, 0],
+        red: [187, 0, 0],
+        green: [0, 187, 0],
+        yellow: [187, 187, 0],
+        blue: [0, 0, 187],
+        magenta: [187, 0, 187],
+        cyan: [0, 187, 187],
+        white: [187, 187, 187],
+
+        bright_black: [85, 85, 85],
+        bright_red: [255, 85, 85],
+        bright_green: [85, 255, 85],
+        bright_yellow: [255, 255, 85],
+        bright_blue: [85, 85, 255],
+        bright_magenta: [255, 85, 255],
+        bright_cyan: [85, 255, 255],
+        bright_white: [255, 255, 255],
+
+        fixed: fixed_colors(),
+    }
+}
+fn palette_terminal_app() -> PaletteData {
+    PaletteData {
+        // primary_background: "0x161616".parse().unwrap()
+        // primary_foreground: "0xf2f2f2".parse().unwrap()
+        primary_foreground: [203, 204, 205],
+        primary_background: [0, 0, 0],
+
+        black: [0, 0, 0],
+        red: [194, 54, 33],
+        green: [37, 188, 36],
+        yellow: [173, 173, 39],
+        blue: [73, 46, 225],
+        magenta: [211, 56, 211],
+        cyan: [51, 187, 200],
+        white: [203, 204, 205],
+
+        bright_black: [129, 131, 131],
+        bright_red: [252, 57, 31],
+        bright_green: [49, 231, 34],
+        bright_yellow: [234, 236, 35],
+        bright_blue: [88, 51, 255],
+        bright_magenta: [249, 53, 248],
+        bright_cyan: [20, 240, 240],
+        bright_white: [233, 235, 235],
+
+        fixed: fixed_colors(),
+    }
+}
+fn palette_win_10() -> PaletteData {
+    PaletteData {
+        // primary_background: "0x161616".parse().unwrap()
+        // primary_foreground: "0xf2f2f2".parse().unwrap()
+        primary_foreground: [204, 204, 204],
+        primary_background: [12, 12, 12],
+
+        black: [12, 12, 12],
+        red: [197, 15, 31],
+        green: [19, 161, 14],
+        yellow: [193, 156, 0],
+        blue: [0, 55, 218],
+        magenta: [136, 23, 152],
+        cyan: [58, 150, 221],
+        white: [204, 204, 204],
+
+        bright_black: [118, 118, 118],
+        bright_red: [231, 72, 86],
+        bright_green: [22, 198, 12],
+        bright_yellow: [249, 241, 165],
+        bright_blue: [59, 120, 255],
+        bright_magenta: [180, 0, 158],
+        bright_cyan: [97, 214, 214],
+        bright_white: [242, 242, 242],
+
+        fixed: fixed_colors(),
+    }
+}
+fn palette_win_xp() -> PaletteData {
+    PaletteData {
+        // primary_background: "0x161616".parse().unwrap()
+        // primary_foreground: "0xf2f2f2".parse().unwrap()
+        primary_foreground: [192, 192, 192],
+        primary_background: [0, 0, 0],
+
+        black: [0, 0, 0],
+        red: [128, 0, 0],
+        green: [0, 128, 0],
+        yellow: [128, 128, 0],
+        blue: [0, 0, 128],
+        magenta: [128, 0, 128],
+        cyan: [0, 128, 128],
+        white: [192, 192, 192],
+
+        bright_black: [128, 128, 128],
+        bright_red: [255, 0, 0],
+        bright_green: [0, 255, 0],
+        bright_yellow: [255, 255, 0],
+        bright_blue: [0, 0, 255],
+        bright_magenta: [255, 0, 255],
+        bright_cyan: [0, 255, 255],
+        bright_white: [255, 255, 255],
+
+        fixed: fixed_colors(),
+    }
+}
+fn palette_win_power_shell() -> PaletteData {
+    PaletteData {
+        // primary_background: "0x161616".parse().unwrap()
+        // primary_foreground: "0xf2f2f2".parse().unwrap()
+        primary_foreground: [192, 192, 192],
+        primary_background: [1, 36, 86],
+
+        black: [0, 0, 0],
+        red: [128, 0, 0],
+        green: [0, 128, 0],
+        yellow: [238, 237, 240],
+        blue: [0, 0, 128],
+        magenta: [1, 36, 86],
+        cyan: [0, 128, 128],
+        white: [192, 192, 192],
+
+        bright_black: [128, 128, 128],
+        bright_red: [255, 0, 0],
+        bright_green: [0, 255, 0],
+        bright_yellow: [255, 255, 0],
+        bright_blue: [0, 0, 255],
         bright_magenta: [255, 0, 255],
         bright_cyan: [0, 255, 255],
         bright_white: [255, 255, 255],
