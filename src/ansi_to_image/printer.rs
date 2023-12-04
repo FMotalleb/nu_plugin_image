@@ -4,7 +4,7 @@ use rusttype::{Font, Scale};
 use std::collections::BTreeMap;
 use vte::{Params, Perform};
 
-use crate::ansi_to_image::{color::ColorType, escape::EscapeSequence, palette::Palette};
+use crate::ansi_to_image::{color::ColorType, new_escape_parser::EscapeSequence, palette::Palette};
 
 pub(super) struct Settings<'a> {
     pub(super) font: Font<'a>,
@@ -219,6 +219,9 @@ impl<'a> Perform for Printer<'a> {
                 }
                 EscapeSequence::Unimplemented(value) => {
                     eprintln!("not implemented for value: {value:?}")
+                }
+                EscapeSequence::Ignore => {
+                    eprintln!("ignored sequence")
                 }
             }
         }
