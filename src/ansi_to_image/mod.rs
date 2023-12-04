@@ -1,7 +1,8 @@
 mod ansi_to_image;
 mod color;
-mod escape;
+// mod escape;
 mod font_family;
+mod new_escape_parser;
 mod nu_plugin;
 mod palette;
 mod printer;
