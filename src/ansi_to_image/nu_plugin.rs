@@ -6,7 +6,10 @@ use rusttype::Font;
 
 use crate::FontFamily;
 
-use super::{ansi_to_image::make_image, palette::Palette};
+use super::{
+    ansi_to_image::make_image,
+    palette::{hex_to_rgb, Palette},
+};
 
 pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, LabeledError> {
     let i: &[u8] = match input.as_binary().ok() {
@@ -43,10 +46,10 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
                 theme
             } else {
                 eprintln!("No theme found that matches the given name");
-                Palette::Vscode
+                Palette::default()
             }
         }
-        _ => Palette::Vscode,
+        _ => Palette::default(),
     };
     let theme = load_custom_theme(call, theme);
 
@@ -134,10 +137,4 @@ fn read_hex_to_array(call: &EvaluatedCall, name: &str) -> Option<[u8; 3]> {
         return Some(hex_to_rgb(val.into()));
     }
     None
-}
-fn hex_to_rgb(hex: i64) -> [u8; 3] {
-    let r = ((hex >> 16) & 0xFF) as u8;
-    let g = ((hex >> 8) & 0xFF) as u8;
-    let b = (hex & 0xFF) as u8;
-    [r, g, b]
 }

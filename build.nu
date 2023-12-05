@@ -31,4 +31,5 @@ def main [package_file: path] {
     nu --commands $"($command)"
     nu --commands $"register ($install_root | path join "bin" $name)($ext)"
     log info "do not forget to restart Nushell for the plugin to be fully available!"
+    nu ($repo_root | path join post_setup.nu)
 }
