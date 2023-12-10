@@ -7,6 +7,7 @@ A [nushell](https://www.nushell.sh/) plugin to create qr code in terminal
 ```bash
 ~> ls | table -c | to png -o output.png
 ```
+![output](https://github.com/FMotalleb/nu_plugin_image/assets/30149519/faab9f4f-8935-4c0e-afd7-9fd7c5c6eccc)
 
 ## Installing
 
@@ -24,11 +25,4 @@ git clone https://github.com/FMotalleb/nu_plugin_image.git
 cd nu_plugin_image
 cargo build
 register target/debug/nu_plugin_image
-```
-
-* or using cargo
-
-```bash
-cargo install nu_plugin_image
-register  ~/.cargo/bin/nu_plugin_image
 ```
