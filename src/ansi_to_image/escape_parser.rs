@@ -104,9 +104,9 @@ impl EscapeSequence {
                 38 => match iter.next() {
                     Some(mode) => Self::ForegroundColor(parse_color(mode, iter)),
                     None => {
-                        eprintln!(
+                        crate::vlog(format!(
                             "[SEQUENCE_PARSER] foreground color mode is not supplied, parse_color(null, ...)",
-                        );
+                        ));
                         Self::Ignore
                     }
                 },
@@ -123,9 +123,9 @@ impl EscapeSequence {
                 48 => match iter.next() {
                     Some(mode) => Self::BackgroundColor(parse_color(mode, iter)),
                     None => {
-                        eprintln!(
+                        crate::vlog(format!(
                             "[SEQUENCE_PARSER] background color mode is not supplied, parse_color(null, ...)",
-                        );
+                        ));
                         Self::Ignore
                     }
                 },
@@ -188,15 +188,15 @@ fn parse_color(mode: &u16, iter: &mut Iter<&u16>) -> ColorType {
                     16..=255 => ColorType::Fixed(**color as u8),
 
                     v => {
-                        eprintln!("[COLOR_PARSER] fixed color value out of range, parse_fixed_color(code: {})",v);
+                        crate::vlog(format!("[COLOR_PARSER] fixed color value out of range, parse_fixed_color(code: {})",v));
                         return ColorType::PrimaryForeground;
                     }
                 };
                 return color;
             } else {
-                eprintln!(
+                crate::vlog(format!(
                     "[COLOR_PARSER] fixed color value not supplied, parse_fixed_color(code: null)"
-                );
+                ));
                 return ColorType::PrimaryForeground;
             }
         }
@@ -208,18 +208,18 @@ fn parse_color(mode: &u16, iter: &mut Iter<&u16>) -> ColorType {
                 return color;
             }
             (r, g, b) => {
-                eprintln!("[COLOR_PARSER] rgb color value not supplied (correctly), parse_rgb_color({}, {}, {})",
+                crate::vlog(format!("[COLOR_PARSER] rgb color value not supplied (correctly), parse_rgb_color({}, {}, {})",
                 r.map(|i| i.to_string() ).unwrap_or("null".to_string()),
                 g.map(|i| i.to_string() ).unwrap_or("null".to_string()),
-                b.map(|i| i.to_string() ).unwrap_or("null".to_string()));
+                b.map(|i| i.to_string() ).unwrap_or("null".to_string())));
                 return ColorType::PrimaryForeground;
             }
         },
         v => {
-            eprintln!(
+            crate::vlog(format!(
                 "[COLOR_PARSER] color mode is not supplied correctly, parse_color({}, ...)",
                 v
-            );
+            ));
             return ColorType::PrimaryForeground;
         }
     }

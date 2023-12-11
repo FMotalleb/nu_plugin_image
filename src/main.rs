@@ -1,3 +1,4 @@
+
 use nu_plugin::{self, EvaluatedCall, LabeledError};
 use nu_plugin_image::{ansi_to_image, image_to_ansi, FontFamily, Palette};
 use nu_protocol::{Category, PluginExample, PluginSignature, SyntaxShape, Type, Value};
@@ -8,11 +9,7 @@ impl nu_plugin::Plugin for Plugin {
     fn signature(&self) -> Vec<PluginSignature> {
         vec![
             PluginSignature::build("from png")
-                // .switch(
-                //     "verbose",
-                //     "prints log of the work into the terminal",
-                //     Some('v'),
-                // )
+          
                 .switch(
                     "reverse-bg",
                     "reverse background and foreground colors",
@@ -48,6 +45,11 @@ impl nu_plugin::Plugin for Plugin {
                     SyntaxShape::Int,
                     "Font height, in pixels",
                     None,
+                )
+                .switch(
+                    "verbose",
+                    "prints log of the work into the terminal",
+                    Some('v'),
                 )
                 .usage("create ansi text from an image")
                 .input_output_type(Type::Binary, Type::String)
@@ -92,6 +94,11 @@ impl nu_plugin::Plugin for Plugin {
                 .named("custom-theme-bright_magenta", SyntaxShape::Int, "custom bright magenta color in hex format (0x040404)", None)
                 .named("custom-theme-bright_cyan", SyntaxShape::Int, "custom bright cyan color in hex format (0x040404)", None)
                 .named("custom-theme-bright_white", SyntaxShape::Int, "custom bright white color in hex format (0x040404)", None)
+                .switch(
+                    "verbose",
+                    "prints log of the work into the terminal",
+                    Some('v'),
+                )
                 .usage("converts ansi string into png image")
                 .extra_usage("if you change font and theme they will be used as base theme of the output and every custom flag you provide will override the selected theme or font")
                 .input_output_type(Type::String, Type::Nothing)
@@ -119,6 +126,7 @@ impl nu_plugin::Plugin for Plugin {
         call: &EvaluatedCall,
         input: &Value,
     ) -> Result<Value, LabeledError> {
+        nu_plugin_image::logging::logger::set_verbose(call.has_flag("verbose"));
         match name {
             "from png" => image_to_ansi(call, input),
             "to png" => ansi_to_image(call, input),

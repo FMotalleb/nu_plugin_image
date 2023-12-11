@@ -45,7 +45,7 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
             if let Some(theme) = Palette::from_name(name) {
                 theme
             } else {
-                eprintln!("No theme found that matches the given name");
+                crate::vlog(format!("No theme found that matches the given name"));
                 Palette::default()
             }
         }

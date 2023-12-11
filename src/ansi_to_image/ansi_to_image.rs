@@ -59,7 +59,7 @@ pub fn make_image(
             }
 
             Err(err) => {
-                eprintln!("err: {err}");
+                crate::vlog(format!("err: {err}"));
                 break;
             }
         }

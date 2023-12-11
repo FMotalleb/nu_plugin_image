@@ -843,17 +843,21 @@ fn hex_from_env(var_name: &str) -> [u8; 3] {
         Ok(code) => match code.parse::<i64>() {
             Ok(val) => hex_to_rgb(val),
             Err(err) => {
-                eprintln!(
+                crate::vlog(format!(
                     "cannot parse env var {}, value: {}, err: {}",
                     var_name,
                     code,
                     err.to_string()
-                );
+                ));
                 [0, 0, 0]
             }
         },
         Err(err) => {
-            eprintln!("cannot read env var {}, err: {}", var_name, err.to_string());
+            crate::vlog(format!(
+                "cannot read env var {}, err: {}",
+                var_name,
+                err.to_string()
+            ));
             [0, 0, 0]
         }
     }
