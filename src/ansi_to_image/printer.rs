@@ -136,35 +136,37 @@ impl<'a> Perform for Printer<'a> {
                 self.state.current_y += self.settings_internal.new_line_distance;
             }
 
-            _ => eprintln!("[execute] {byte}, {byte:02x}"),
+            _ => crate::vlog(format!("[execute] {byte}, {byte:02x}")),
         }
 
         self.state.last_execute_byte = Some(byte)
     }
 
     fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
-        eprintln!(
+        crate::vlog(format!(
             "[hook] params={params:?}, intermediates={intermediates:?}, ignore={ignore:?}, \
              char={c:?}"
-        );
+        ));
     }
 
     fn put(&mut self, byte: u8) {
-        eprintln!("[put] {byte:02x}");
+        crate::vlog(format!("[put] {byte:02x}"));
     }
 
     fn unhook(&mut self) {
-        eprintln!("[unhook]");
+        crate::vlog(format!("[unhook]"));
     }
 
     fn osc_dispatch(&mut self, params: &[&[u8]], bell_terminated: bool) {
-        eprintln!("[osc_dispatch] params={params:?} bell_terminated={bell_terminated}2");
+        crate::vlog(format!(
+            "[osc_dispatch] params={params:?} bell_terminated={bell_terminated}2"
+        ));
     }
 
     fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
-        eprintln!(
+        crate::vlog(format!(
             "[csi_dispatch] params={params:?}, intermediates={intermediates:?}, ignore={ignore:?}, char={c:?}"
-        );
+        ));
         let actions = EscapeSequence::parse_params(params.iter().flatten().collect::<Vec<_>>());
 
         for action in actions {
@@ -215,14 +217,12 @@ impl<'a> Perform for Printer<'a> {
                 | EscapeSequence::NotReserved
                 | EscapeSequence::NormalIntensity
                 | EscapeSequence::RapidBlink => {
-                    eprintln!("not implemented for action: {action:?}")
+                    crate::vlog(format!("not implemented for action: {action:?}"))
                 }
                 EscapeSequence::Unimplemented(value) => {
-                    eprintln!("not implemented for value: {value:?}")
+                    crate::vlog(format!("not implemented for value: {value:?}"))
                 }
-                EscapeSequence::Ignore => {
-                    eprintln!("ignored sequence")
-                }
+                EscapeSequence::Ignore => crate::vlog(format!("ignored sequence")),
             }
         }
     }

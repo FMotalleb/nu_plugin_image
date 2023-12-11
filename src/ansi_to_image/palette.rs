@@ -15,8 +15,18 @@ pub enum Palette {
     WinTerminal,
     Win10,
     WinPs,
+    Env,
     Custom(PaletteData),
     Test,
+}
+
+impl Default for Palette {
+    fn default() -> Self {
+        if let Ok(_) = std::env::var("NU_PLUGIN_IMAGE_FG") {
+            return Palette::Env;
+        }
+        return Palette::Vscode;
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -159,6 +169,7 @@ impl Palette {
             Palette::Win10 => palette_win_10(),
             Palette::WinPs => palette_win_power_shell(),
             Palette::Test => palette_test(),
+            Palette::Env => palette_env(),
             Palette::Custom(p) => *p,
         }
     }
@@ -229,7 +240,32 @@ impl Palette {
         }
     }
 }
+fn palette_env() -> PaletteData {
+    PaletteData {
+        primary_foreground: hex_from_env("NU_PLUGIN_IMAGE_FG"),
+        primary_background: hex_from_env("NU_PLUGIN_IMAGE_BG"),
 
+        black: hex_from_env("NU_PLUGIN_IMAGE_BLACK"),
+        red: hex_from_env("NU_PLUGIN_IMAGE_RED"),
+        green: hex_from_env("NU_PLUGIN_IMAGE_GREEN"),
+        yellow: hex_from_env("NU_PLUGIN_IMAGE_YELLOW"),
+        blue: hex_from_env("NU_PLUGIN_IMAGE_BLUE"),
+        magenta: hex_from_env("NU_PLUGIN_IMAGE_MAGENTA"),
+        cyan: hex_from_env("NU_PLUGIN_IMAGE_CYAN"),
+        white: hex_from_env("NU_PLUGIN_IMAGE_WHITE"),
+
+        bright_black: hex_from_env("NU_PLUGIN_IMAGE_BRIGHT_BLACK"),
+        bright_red: hex_from_env("NU_PLUGIN_IMAGE_BRIGHT_RED"),
+        bright_green: hex_from_env("NU_PLUGIN_IMAGE_BRIGHT_GREEN"),
+        bright_yellow: hex_from_env("NU_PLUGIN_IMAGE_BRIGHT_YELLOW"),
+        bright_blue: hex_from_env("NU_PLUGIN_IMAGE_BRIGHT_BLUE"),
+        bright_magenta: hex_from_env("NU_PLUGIN_IMAGE_BRIGHT_MAGENTA"),
+        bright_cyan: hex_from_env("NU_PLUGIN_IMAGE_BRIGHT_CYAN"),
+        bright_white: hex_from_env("NU_PLUGIN_IMAGE_BRIGHT_WHITE"),
+
+        fixed: fixed_colors(),
+    }
+}
 fn palette_vscode() -> PaletteData {
     PaletteData {
         // primary_background: "0x161616".parse().unwrap()
@@ -799,4 +835,37 @@ fn fixed_colors() -> [[u8; 3]; 256] {
         [228, 228, 228],
         [238, 238, 238],
     ]
+}
+
+fn hex_from_env(var_name: &str) -> [u8; 3] {
+    let val = std::env::var(var_name);
+    match val {
+        Ok(code) => match code.parse::<i64>() {
+            Ok(val) => hex_to_rgb(val),
+            Err(err) => {
+                crate::vlog(format!(
+                    "cannot parse env var {}, value: {}, err: {}",
+                    var_name,
+                    code,
+                    err.to_string()
+                ));
+                [0, 0, 0]
+            }
+        },
+        Err(err) => {
+            crate::vlog(format!(
+                "cannot read env var {}, err: {}",
+                var_name,
+                err.to_string()
+            ));
+            [0, 0, 0]
+        }
+    }
+}
+
+pub(crate) fn hex_to_rgb(hex: i64) -> [u8; 3] {
+    let r = ((hex >> 16) & 0xFF) as u8;
+    let g = ((hex >> 8) & 0xFF) as u8;
+    let b = (hex & 0xFF) as u8;
+    [r, g, b]
 }

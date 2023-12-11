@@ -1152,6 +1152,7 @@ dependencies = [
  "image",
  "imageproc",
  "include-flate",
+ "lazy_static",
  "nu-plugin",
  "nu-protocol",
  "rusttype",
