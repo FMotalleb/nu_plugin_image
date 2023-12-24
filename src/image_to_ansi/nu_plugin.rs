@@ -1,3 +1,4 @@
+use image::{codecs::png::PngDecoder, ImageDecoder};
 use nu_plugin::{EvaluatedCall, LabeledError};
 use nu_protocol::{Span, Value};
 
@@ -6,6 +7,14 @@ use super::core::to_ansi_converter;
 pub fn image_to_ansi(call: &EvaluatedCall, input: &Value) -> Result<Value, LabeledError> {
     match build_params(call, input) {
         Ok(params) => {
+            let mut config = viuer::Config::default();
+            config.use_stderr = true;
+            config.absolute_offset = false;
+            config.use_iterm = false;
+            let img =
+                image::DynamicImage::from_decoder(PngDecoder::new(params.file.as_slice()).unwrap());
+            let result = viuer::to_ansi(&img.unwrap(), &config);
+            return Ok(Value::string(result.unwrap(), call.head));
             match to_ansi_converter(
                 &params.file,
                 // params.verbose,
