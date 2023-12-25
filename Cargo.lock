@@ -586,15 +586,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "getopts"
-version = "0.2.21"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14dbbfd5c71d70241ecf9e6f13737f7b5ce823821063188d7e46c41d371eebd5"
-dependencies = [
- "unicode-width",
-]
-
-[[package]]
 name = "getrandom"
 version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -994,7 +985,7 @@ dependencies = [
  "supports-color",
  "supports-hyperlinks",
  "supports-unicode",
- "terminal_size 0.1.17",
+ "terminal_size",
  "textwrap",
  "thiserror",
  "unicode-width",
@@ -1197,8 +1188,9 @@ dependencies = [
 name = "nu_plugin_image"
 version = "0.3.0"
 dependencies = [
+ "ansi_colours",
  "clap",
- "getopts",
+ "crossterm",
  "image",
  "imageproc",
  "include-flate",
@@ -1206,7 +1198,7 @@ dependencies = [
  "nu-plugin",
  "nu-protocol",
  "rusttype",
- "terminal_size 0.3.0",
+ "termcolor",
  "unicode-segmentation",
  "viuer",
  "vte 0.13.0",
@@ -1875,16 +1867,6 @@ checksum = "633c1a546cee861a1a6d0dc69ebeca693bf4296661ba7852b9d21d159e0506df"
 dependencies = [
  "libc",
  "winapi",
-]
-
-[[package]]
-name = "terminal_size"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "21bebf2b7c9e0a515f6e0f8c51dc0f8e4696391e6f1ff30379559f8365fb0df7"
-dependencies = [
- "rustix",
- "windows-sys 0.48.0",
 ]
 
 [[package]]

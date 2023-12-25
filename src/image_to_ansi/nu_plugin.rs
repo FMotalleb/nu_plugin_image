@@ -1,3 +1,5 @@
+use std::env;
+
 use image::codecs::png::PngDecoder;
 use nu_plugin::{EvaluatedCall, LabeledError};
 use nu_protocol::{Span, Value};
@@ -5,27 +7,36 @@ use nu_protocol::{Span, Value};
 pub fn image_to_ansi(call: &EvaluatedCall, input: &Value) -> Result<Value, LabeledError> {
     match build_params(call, input) {
         Ok(params) => {
-            let mut config = viuer::Config::default();
-            config.use_stderr = true;
-            config.absolute_offset = false;
-            config.use_iterm = true;
-            config.use_kitty = false;
-            config.height = params.height;
-            config.width = params.width;
+            let img = PngDecoder::new(params.file.as_slice())
+                .map(|img| image::DynamicImage::from_decoder(img));
+            match img {
+                Ok(img) => {
+                    let result = super::writer::lib::to_ansi(&img.unwrap(), &params);
 
-            let img =
-                image::DynamicImage::from_decoder(PngDecoder::new(params.file.as_slice()).unwrap());
-            let result = viuer::to_ansi(&img.unwrap(), &config);
-            return Ok(Value::string(result.unwrap(), call.head));
+                    return result
+                        .map(|value| Value::string(value, call.head))
+                        .map_err(|err| response_error(err, Some(call.head)));
+                }
+                Err(er) => Err(response_error(er.to_string(), Some(call.head))),
+            }
         }
         Err(err) => Err(err),
     }
 }
 
-struct IntoAnsiParams {
+pub(super) struct IntoAnsiParams {
     file: Vec<u8>,
-    width: Option<u32>,
-    height: Option<u32>,
+    pub width: Option<u32>,
+    pub height: Option<u32>,
+    pub truecolor: bool,
+}
+
+pub fn truecolor_available() -> bool {
+    if let Ok(value) = env::var("COLORTERM") {
+        value.contains("truecolor") || value.contains("24bit")
+    } else {
+        false
+    }
 }
 
 fn build_params(call: &EvaluatedCall, input: &Value) -> Result<IntoAnsiParams, LabeledError> {
@@ -34,6 +45,7 @@ fn build_params(call: &EvaluatedCall, input: &Value) -> Result<IntoAnsiParams, L
         // verbose: false,
         height: None,
         width: None,
+        truecolor: truecolor_available(),
     };
     match input.as_binary() {
         Ok(file) => params.file = file.to_owned(),
@@ -73,6 +85,13 @@ fn load_u32(call: &EvaluatedCall, flag_name: &str) -> Result<u32, LabeledError> 
 fn make_params_err(text: String, span: Option<Span>) -> LabeledError {
     return LabeledError {
         label: "faced an error when tried to parse the params".to_string(),
+        msg: text,
+        span: span,
+    };
+}
+fn response_error(text: String, span: Option<Span>) -> LabeledError {
+    return LabeledError {
+        label: "cannot create image".to_string(),
         msg: text,
         span: span,
     };
