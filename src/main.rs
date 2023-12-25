@@ -9,13 +9,6 @@ impl nu_plugin::Plugin for Plugin {
     fn signature(&self) -> Vec<PluginSignature> {
         vec![
             PluginSignature::build("from png")
-          
-                .switch(
-                    "reverse-bg",
-                    "reverse background and foreground colors",
-                    Some('r'),
-                )
-                .switch("blink", "make blinking effect", Some('b'))
                 .named(
                     "width",
                     SyntaxShape::Int,
@@ -27,24 +20,6 @@ impl nu_plugin::Plugin for Plugin {
                     SyntaxShape::Int,
                     "Output height, in characters.",
                     Some('y'),
-                )
-                .named(
-                    "char",
-                    SyntaxShape::String,
-                    "Character that will be used (like pixels)",
-                    Some('c'),
-                )
-                .named(
-                    "font-width",
-                    SyntaxShape::Int,
-                    "Font width, in pixels",
-                    None,
-                )
-                .named(
-                    "font-height",
-                    SyntaxShape::Int,
-                    "Font height, in pixels",
-                    None,
                 )
                 .switch(
                     "verbose",
