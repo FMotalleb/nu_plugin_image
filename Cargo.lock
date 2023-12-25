@@ -2019,6 +2019,7 @@ checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 [[package]]
 name = "viuer"
 version = "0.7.1"
+source = "git+https://github.com/FMotalleb/viuer.git#6684c2cbec72339d7d16aad75a68ad25b00ad7d1"
 dependencies = [
  "ansi_colours",
  "base64",

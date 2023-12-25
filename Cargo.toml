@@ -1,5 +1,5 @@
 [dependencies]
-viuer = { path = "../viuer" }
+viuer = { git = "https://github.com/FMotalleb/viuer.git" }
 getopts = "0.2.21"
 image = "0.24.7"
 imageproc = "0.23"

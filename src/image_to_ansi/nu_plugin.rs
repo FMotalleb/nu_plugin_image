@@ -1,8 +1,6 @@
-use image::{codecs::png::PngDecoder, ImageDecoder};
+use image::codecs::png::PngDecoder;
 use nu_plugin::{EvaluatedCall, LabeledError};
 use nu_protocol::{Span, Value};
-
-use super::core::to_ansi_converter;
 
 pub fn image_to_ansi(call: &EvaluatedCall, input: &Value) -> Result<Value, LabeledError> {
     match build_params(call, input) {
@@ -10,29 +8,15 @@ pub fn image_to_ansi(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
             let mut config = viuer::Config::default();
             config.use_stderr = true;
             config.absolute_offset = false;
-            config.use_iterm = false;
+            config.use_iterm = true;
+            config.use_kitty = false;
+            config.height = params.height;
+            config.width = params.width;
+
             let img =
                 image::DynamicImage::from_decoder(PngDecoder::new(params.file.as_slice()).unwrap());
             let result = viuer::to_ansi(&img.unwrap(), &config);
             return Ok(Value::string(result.unwrap(), call.head));
-            match to_ansi_converter(
-                &params.file,
-                // params.verbose,
-                params.reverse_bg,
-                params.blinking,
-                params.width,
-                params.height,
-                params.character,
-                params.font_width,
-                params.font_height,
-            ) {
-                Ok(result) => Ok(Value::string(result, call.head)),
-                Err(err) => Err(LabeledError {
-                    label: "cannot convert given image to ansi text".to_string(),
-                    msg: err.to_string(),
-                    span: Some(call.head),
-                }),
-            }
         }
         Err(err) => Err(err),
     }
@@ -43,8 +27,8 @@ struct IntoAnsiParams {
     // verbose: bool,
     reverse_bg: bool,
     blinking: bool,
-    width: u32,
-    height: u32,
+    width: Option<u32>,
+    height: Option<u32>,
     character: Option<String>,
     font_width: u32,
     font_height: u32,
@@ -56,8 +40,8 @@ fn build_params(call: &EvaluatedCall, input: &Value) -> Result<IntoAnsiParams, L
         // verbose: false,
         blinking: false,
         reverse_bg: false,
-        height: 0,
-        width: 0,
+        height: None,
+        width: None,
         character: None,
         font_height: 0,
         font_width: 0,
@@ -70,12 +54,12 @@ fn build_params(call: &EvaluatedCall, input: &Value) -> Result<IntoAnsiParams, L
     params.reverse_bg = call.has_flag("reverse-bg");
     params.blinking = call.has_flag("blink");
     params.width = match load_u32(call, "width") {
-        Ok(value) => value,
-        Err(_) => 1200,
+        Ok(value) => Some(value),
+        Err(_) => None,
     };
     params.height = match load_u32(call, "height") {
-        Ok(value) => value,
-        Err(_) => 1200,
+        Ok(value) => Some(value),
+        Err(_) => None,
     };
     params.font_width = match load_u32(call, "font-width") {
         Ok(value) => value,
