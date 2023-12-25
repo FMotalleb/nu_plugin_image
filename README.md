@@ -15,7 +15,7 @@ A [nushell](https://www.nushell.sh/) plugin to create qr code in terminal
 ```
 
 from: <img src="https://github.com/FMotalleb/nu_plugin_image/assets/30149519/73e20721-dec0-4604-8f10-c5b36fbad389" alt="drawing" width="200"/>
-to: <img src="https://github.com/FMotalleb/nu_plugin_image/assets/30149519/9b6cb816-bda2-486c-934d-4533b085c941" alt="drawing" width="200"/>
+to:  <img src="https://github.com/FMotalleb/nu_plugin_image/assets/30149519/c3258e71-e42f-483a-b8c8-6fcb3af82e78" alt="drawing" width="200"/>
 
 ## Installing
 
