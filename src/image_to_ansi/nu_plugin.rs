@@ -24,35 +24,21 @@ pub fn image_to_ansi(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
 
 struct IntoAnsiParams {
     file: Vec<u8>,
-    // verbose: bool,
-    reverse_bg: bool,
-    blinking: bool,
     width: Option<u32>,
     height: Option<u32>,
-    character: Option<String>,
-    font_width: u32,
-    font_height: u32,
 }
 
 fn build_params(call: &EvaluatedCall, input: &Value) -> Result<IntoAnsiParams, LabeledError> {
     let mut params = IntoAnsiParams {
         file: [].to_vec(),
         // verbose: false,
-        blinking: false,
-        reverse_bg: false,
         height: None,
         width: None,
-        character: None,
-        font_height: 0,
-        font_width: 0,
     };
     match input.as_binary() {
         Ok(file) => params.file = file.to_owned(),
         Err(err) => return Err(make_params_err(err.to_string(), Some(call.head))),
     };
-    // params.verbose = call.has_flag("verbose");
-    params.reverse_bg = call.has_flag("reverse-bg");
-    params.blinking = call.has_flag("blink");
     params.width = match load_u32(call, "width") {
         Ok(value) => Some(value),
         Err(_) => None,
@@ -60,33 +46,6 @@ fn build_params(call: &EvaluatedCall, input: &Value) -> Result<IntoAnsiParams, L
     params.height = match load_u32(call, "height") {
         Ok(value) => Some(value),
         Err(_) => None,
-    };
-    params.font_width = match load_u32(call, "font-width") {
-        Ok(value) => value,
-        Err(_) => 20,
-    };
-    params.font_height = match load_u32(call, "font-height") {
-        Ok(value) => value,
-        Err(_) => 30,
-    };
-    params.character = match call.get_flag_value("char") {
-        Some(ch) => match ch {
-            Value::String { ref val, .. } => {
-                if val.len() == 1 {
-                    Some(val.to_owned())
-                } else {
-                    return Err(make_params_err(
-                        format!(
-                            "char value must be a single character. instead received `{}`",
-                            val
-                        ),
-                        Some(ch.span()),
-                    ));
-                }
-            }
-            _ => None,
-        },
-        None => None,
     };
 
     Ok(params)
