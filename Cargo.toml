@@ -1,5 +1,4 @@
 [dependencies]
-viuer = { git = "https://github.com/FMotalleb/viuer.git" }
 termcolor = "1.1"
 ansi_colours = "1.0"
 crossterm = "0.27"
@@ -7,7 +6,6 @@ image = "0.24.7"
 imageproc = "0.23"
 include-flate = "0.3"
 rusttype = "0.9"
-unicode-segmentation = "1.10.1"
 vte = "0.13"
 lazy_static = "1.4.0"
 
