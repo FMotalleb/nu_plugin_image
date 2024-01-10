@@ -23,7 +23,7 @@ def get-terminal-colors [] {
     let color_13 = (input $"\rhold enter 14 of 16(ansi -o '4;13;?')(ansi st)" --bytes-until-any "\e\\" -s)
     let color_14 = (input $"\rhold enter 15 of 16(ansi -o '4;14;?')(ansi st)" --bytes-until-any "\e\\" -s)
     let color_15 = (input $"\rhold enter 16 of 16(ansi -o '4;15;?')(ansi st)" --bytes-until-any "\e\\" -s)
-    print ("\nFound the colors of your shell, in the next step I will store them in your env var" | ansi gradient --fgstart 0xee33ff)
+    print ("\nFound the colors of your shell, in the next step I will store them in your env var" )
     sleep 1sec
 
     # goes through 4;255;?
