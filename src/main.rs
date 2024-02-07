@@ -98,10 +98,13 @@ impl nu_plugin::Plugin for Plugin {
     fn run(
         &mut self,
         name: &str,
+        _config: &Option<Value>,
         call: &EvaluatedCall,
         input: &Value,
     ) -> Result<Value, LabeledError> {
-        nu_plugin_image::logging::logger::set_verbose(call.has_flag("verbose"));
+        if let Ok(is_verbose) = call.has_flag("verbose"){
+            nu_plugin_image::logging::logger::set_verbose(is_verbose);
+        }
         match name {
             "from png" => image_to_ansi(call, input),
             "to png" => ansi_to_image(call, input),
