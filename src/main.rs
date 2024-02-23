@@ -81,12 +81,12 @@ impl nu_plugin::Plugin for Plugin {
                     vec![
                         PluginExample{
                             description: "creates image of `ls` command's output and save it in the `ls.png` file".to_string(),
-                            example: "ls | table -c | to png --theme ubuntu --font Ubuntu --output-path ls.png".to_string(),
+                            example: "ls | table -c | to png ls.png --theme ubuntu --font Ubuntu".to_string(),
                             result: None,
                         },
                         PluginExample{
                             description: "creates image of `ls` command's output and save it in the `ls.png` file with custom greenish background color".to_string(),
-                            example: "ls | table -c | to png --theme ubuntu --font Ubuntu --custom-theme-bg 0x112411 --output-path ls.png".to_string(),
+                            example: "ls | table -c | to png ls.png --theme ubuntu --font Ubuntu --custom-theme-bg 0x112411".to_string(),
                             result: None, 
                         },
                     ]
