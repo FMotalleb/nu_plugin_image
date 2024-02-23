@@ -30,13 +30,13 @@ impl nu_plugin::Plugin for Plugin {
                 .input_output_type(Type::Binary, Type::String)
                 .category(Category::Conversions),
             PluginSignature::build("to png")
-                .named("width", SyntaxShape::Int, "output width", Some('w'))
-                .named(
+                .optional(
                     "output-path",
                     SyntaxShape::Filepath,
-                    "output file path",
-                    Some('o'),
+                    "output file path (by default uses current timestamp)",
                 )
+                .named("width", SyntaxShape::Int, "output width", Some('w'))
+                
                 .named("theme",SyntaxShape::String,format!("select theme of the output, one of: {:?}\n\t\tby default uses `vscode` theme and you can mix this flag with custom theme colors every other colors will be from the selected theme",Palette::list()),Some('t'))
                 .named(
                     "font",
@@ -81,12 +81,12 @@ impl nu_plugin::Plugin for Plugin {
                     vec![
                         PluginExample{
                             description: "creates image of `ls` command's output and save it in the `ls.png` file".to_string(),
-                            example: "ls | table -c | to png --theme ubuntu --font Ubuntu --output-path ls.png".to_string(),
+                            example: "ls | table -c | to png ls.png --theme ubuntu --font Ubuntu".to_string(),
                             result: None,
                         },
                         PluginExample{
                             description: "creates image of `ls` command's output and save it in the `ls.png` file with custom greenish background color".to_string(),
-                            example: "ls | table -c | to png --theme ubuntu --font Ubuntu --custom-theme-bg 0x112411 --output-path ls.png".to_string(),
+                            example: "ls | table -c | to png ls.png --theme ubuntu --font Ubuntu --custom-theme-bg 0x112411".to_string(),
                             result: None, 
                         },
                     ]
