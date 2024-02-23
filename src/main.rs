@@ -30,13 +30,13 @@ impl nu_plugin::Plugin for Plugin {
                 .input_output_type(Type::Binary, Type::String)
                 .category(Category::Conversions),
             PluginSignature::build("to png")
-                .named("width", SyntaxShape::Int, "output width", Some('w'))
-                .named(
+                .optional(
                     "output-path",
                     SyntaxShape::Filepath,
-                    "output file path",
-                    Some('o'),
+                    "output file path (by default uses current timestamp)",
                 )
+                .named("width", SyntaxShape::Int, "output width", Some('w'))
+                
                 .named("theme",SyntaxShape::String,format!("select theme of the output, one of: {:?}\n\t\tby default uses `vscode` theme and you can mix this flag with custom theme colors every other colors will be from the selected theme",Palette::list()),Some('t'))
                 .named(
                     "font",
