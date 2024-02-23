@@ -30,8 +30,8 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
     };
     let font: FontFamily<'_> = resolve_font(call);
     // eprintln!("selected font: {}", font.to_string());
-    let outPath = call.opt::<String>(0);
-    let out = match outPath {
+    let out_path = call.opt::<String>(0);
+    let out = match out_path {
         Ok(path) if path.is_some()=>{
             let option=path.unwrap();
             Some(PathBuf::from(option))
