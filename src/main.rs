@@ -77,14 +77,13 @@ impl SimplePluginCommand for ToPngCommand {
     }
 
     fn signature(&self) -> nu_protocol::Signature {
-        Signature::build("to png")
+        Signature::build("to png").optional(
+            "output-path",
+            SyntaxShape::Filepath,
+            "output file path if using date time if omitted",
+        )
                 .named("width", SyntaxShape::Int, "output width", Some('w'))
-                .named(
-                    "output-path",
-                    SyntaxShape::Filepath,
-                    "output file path",
-                    Some('o'),
-                )
+                
                 .named("theme",SyntaxShape::String,format!("select theme of the output, one of: {:?}\n\t\tby default uses `vscode` theme and you can mix this flag with custom theme colors every other colors will be from the selected theme",Palette::list()),Some('t'))
                 .named(
                     "font",
@@ -150,11 +149,11 @@ impl SimplePluginCommand for ToPngCommand {
     fn run(
         &self,
         _plugin: &Self::Plugin,
-        _engine: &nu_plugin::EngineInterface,
+        engine: &nu_plugin::EngineInterface,
         call: &EvaluatedCall,
         input: &Value,
     ) -> Result<Value, nu_protocol::LabeledError> {
-        ansi_to_image(call, input)
+        ansi_to_image(engine,call, input)
     }
 }
 
