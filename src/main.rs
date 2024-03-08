@@ -36,7 +36,6 @@ impl nu_plugin::Plugin for Plugin {
                     "output file path (by default uses current timestamp)",
                 )
                 .named("width", SyntaxShape::Int, "output width", Some('w'))
-                
                 .named("theme",SyntaxShape::String,format!("select theme of the output, one of: {:?}\n\t\tby default uses `vscode` theme and you can mix this flag with custom theme colors every other colors will be from the selected theme",Palette::list()),Some('t'))
                 .named(
                     "font",
@@ -77,6 +76,7 @@ impl nu_plugin::Plugin for Plugin {
                 .usage("converts ansi string into png image")
                 .extra_usage("if you change font and theme they will be used as base theme of the output and every custom flag you provide will override the selected theme or font")
                 .input_output_type(Type::String, Type::Nothing)
+                .input_output_type(Type::Binary, Type::Nothing)
                 .plugin_examples(
                     vec![
                         PluginExample{

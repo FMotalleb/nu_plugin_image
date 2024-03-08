@@ -12,8 +12,15 @@ use super::{
 };
 
 pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, LabeledError> {
-    let i: &[u8] = match input.as_binary().ok() {
-        Some(value) => value,
+    let i: &[u8] = match input {
+        Value::String {
+            val,
+            internal_span: _,
+        } => val.as_bytes(),
+        Value::Binary {
+            val,
+            internal_span: _,
+        } => val,
         _ => {
             return Err(make_params_err(
                 "cannot read input as binary data (maybe its empty)".to_string(),
