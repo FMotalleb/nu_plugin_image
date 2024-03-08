@@ -56,7 +56,10 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
             Some(call.head),
         ));
     }
-    let theme = match call.get_flag_value("theme").map(|i| i.as_string()) {
+    let theme = match call
+        .get_flag_value("theme")
+        .map(|i| i.as_str().map(|f| f.to_string()))
+    {
         Some(Ok(name)) => {
             if let Some(theme) = Palette::from_name(name.to_string()) {
                 theme
@@ -69,7 +72,7 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
     };
     let theme = load_custom_theme(call, theme);
 
-    let path = PathBuf::from(out);
+    let path = PathBuf::from(out.unwrap());
     make_image(path.as_path(), font, size, i, theme);
 
     Ok(Value::nothing(call.head))
