@@ -30,8 +30,8 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
     };
     let font: FontFamily<'_> = resolve_font(call);
     // eprintln!("selected font: {}", font.to_string());
-    let out = match call.get_flag_value("output-path").map(|i| i.as_path()) {
-        Some(path) if path.is_ok() => path.unwrap(),
+    let out = match call.get_flag_value("output-path").map(|i| i.as_str().map(|i| i.to_string())) {
+        Some(Ok(path)) => path,
         _ => {
             return Err(make_params_err(
                 "`--output-path` parameter is not correct file path value".to_string(),
@@ -40,20 +40,20 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         }
     };
 
-    let theme = match call.get_flag_value("theme").map(|i| i.as_string()) {
+    let theme = match call.get_flag_value("theme").map(|i| i.as_str().map(|i| i.to_string())) {
         Some(Ok(name)) => {
-            if let Some(theme) = Palette::from_name(name) {
+            if let Some(theme) = Palette::from_name(name.to_string()) {
                 theme
             } else {
-                crate::vlog(format!("No theme found that matches the given name"));
+                crate::vlog("No theme found that matches the given name".to_string());
                 Palette::default()
             }
         }
         _ => Palette::default(),
     };
     let theme = load_custom_theme(call, theme);
-
-    make_image(out.as_path(), font, size, i, theme);
+    let path = PathBuf::from(out);
+    make_image(path.as_path(), font, size, i, theme);
 
     Ok(Value::nothing(call.head))
 }
@@ -92,7 +92,7 @@ fn resolve_font(call: &EvaluatedCall) -> FontFamily<'_> {
 }
 
 fn load_file(path: Value) -> Vec<u8> {
-    let path = path.as_string().unwrap();
+    let path = path.as_str().unwrap();
     let mut file = File::open(PathBuf::from(path)).unwrap();
     let mut buffer = Vec::new();
 
@@ -105,7 +105,7 @@ fn make_params_err(text: String, span: Option<Span>) -> LabeledError {
     return LabeledError {
         label: "faced an error when tried to parse the params".to_string(),
         msg: text,
-        span: span,
+         span,
     };
 }
 
