@@ -1,6 +1,6 @@
 {
   "name": "nu_plugin_image",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "A nushell plugin to open png images in the shell and save ansi string as images (like tables or ...)",
   "license": "LICENSE",
   "type": "custom"

@@ -1,7 +1,7 @@
 use std::{fs::File, io::Read, path::PathBuf, time::SystemTime};
 
 use nu_plugin::EvaluatedCall;
-use nu_protocol::{LabeledError, Span, Value};
+use nu_protocol::{engine, LabeledError, Span, Value};
 use rusttype::Font;
 
 use crate::FontFamily;
@@ -40,8 +40,6 @@ pub fn ansi_to_image(
         _ => None,
     };
     let font: FontFamily<'_> = resolve_font(call);
-    // eprintln!("selected font: {}", font.to_string());
-
     let out_path = call.opt::<String>(0);
     let out = match out_path {
         Ok(path) if path.is_some() => {
@@ -60,7 +58,6 @@ pub fn ansi_to_image(
             }
         }
     };
-
     if let None = out {
         return Err(make_params_err(
             format!("cannot use time stamp as the file name timestamp please provide output path explicitly"),
@@ -133,10 +130,8 @@ fn load_file(path: Value) -> Vec<u8> {
 }
 
 fn make_params_err(text: String, span: Span) -> LabeledError {
-    return LabeledError::new(text)
-        .with_label("faced an error when tried to parse the params", span);
+    LabeledError::new(text).with_label("faced an error when tried to parse the params", span)
 }
-
 fn load_custom_theme(call: &EvaluatedCall, theme: Palette) -> Palette {
     let result = theme.palette().copy_with(
         read_hex_to_array(call, "custom-theme-fg"),
