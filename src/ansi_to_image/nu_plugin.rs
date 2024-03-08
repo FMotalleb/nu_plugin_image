@@ -1,4 +1,4 @@
-use std::{fs::File, io::Read, path::PathBuf};
+use std::{env, fs::File, io::Read, path::PathBuf, time::SystemTime};
 
 use nu_plugin::{EvaluatedCall, LabeledError};
 use nu_protocol::{Span, Value};
@@ -30,17 +30,33 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
     };
     let font: FontFamily<'_> = resolve_font(call);
     // eprintln!("selected font: {}", font.to_string());
-    let out = match call.get_flag_value("output-path").map(|i| i.as_str().map(|i| i.to_string())) {
-        Some(Ok(path)) => path,
+
+    let out_path = call.opt::<String>(0);
+    let out = match out_path {
+        Ok(path) if path.is_some() => {
+            let option = path.unwrap();
+            Some(PathBuf::from(option))
+        }
         _ => {
-            return Err(make_params_err(
-                "`--output-path` parameter is not correct file path value".to_string(),
-                Some(call.head),
-            ))
+            let now = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH);
+            let current = env::current_dir();
+            if let (Ok(now), Ok(current)) = (now, current) {
+                let current = &mut current.clone();
+                current.push(PathBuf::from(format!("nu-image-{}.png", now.as_secs())));
+                Some(current.to_owned())
+            } else {
+                None
+            }
         }
     };
 
-    let theme = match call.get_flag_value("theme").map(|i| i.as_str().map(|i| i.to_string())) {
+    if let None = out {
+        return Err(make_params_err(
+            format!("cannot use time stamp as the file name timestamp please provide output path explicitly"),
+            Some(call.head),
+        ));
+    }
+    let theme = match call.get_flag_value("theme").map(|i| i.as_string()) {
         Some(Ok(name)) => {
             if let Some(theme) = Palette::from_name(name.to_string()) {
                 theme
@@ -52,6 +68,7 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         _ => Palette::default(),
     };
     let theme = load_custom_theme(call, theme);
+
     let path = PathBuf::from(out);
     make_image(path.as_path(), font, size, i, theme);
 
@@ -105,7 +122,7 @@ fn make_params_err(text: String, span: Option<Span>) -> LabeledError {
     return LabeledError {
         label: "faced an error when tried to parse the params".to_string(),
         msg: text,
-         span,
+        span,
     };
 }
 
