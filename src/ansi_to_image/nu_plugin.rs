@@ -1,7 +1,7 @@
 use std::{fs::File, io::Read, path::PathBuf, time::SystemTime};
 
 use nu_plugin::EvaluatedCall;
-use nu_protocol::{engine, LabeledError, Span, Value};
+use nu_protocol::{LabeledError, Span, Value};
 use rusttype::Font;
 
 use crate::FontFamily;
