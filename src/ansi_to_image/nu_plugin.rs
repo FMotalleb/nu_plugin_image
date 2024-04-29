@@ -1,7 +1,7 @@
 use std::{fs::File, io::Read, path::PathBuf};
 
-use nu_plugin::{EvaluatedCall, LabeledError};
-use nu_protocol::{Span, Value};
+use nu_plugin::EvaluatedCall;
+use nu_protocol::{LabeledError, Span, Value};
 use rusttype::Font;
 
 use crate::FontFamily;
@@ -17,7 +17,7 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         _ => {
             return Err(make_params_err(
                 "cannot read input as binary data (maybe its empty)".to_string(),
-                Some(input.span()),
+                input.span(),
             ))
         }
     };
@@ -30,17 +30,23 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
     };
     let font: FontFamily<'_> = resolve_font(call);
     // eprintln!("selected font: {}", font.to_string());
-    let out = match call.get_flag_value("output-path").map(|i| i.as_str().map(|i| i.to_string())) {
+    let out = match call
+        .get_flag_value("output-path")
+        .map(|i| i.as_str().map(|i| i.to_string()))
+    {
         Some(Ok(path)) => path,
         _ => {
             return Err(make_params_err(
                 "`--output-path` parameter is not correct file path value".to_string(),
-                Some(call.head),
+                call.head,
             ))
         }
     };
 
-    let theme = match call.get_flag_value("theme").map(|i| i.as_str().map(|i| i.to_string())) {
+    let theme = match call
+        .get_flag_value("theme")
+        .map(|i| i.as_str().map(|i| i.to_string()))
+    {
         Some(Ok(name)) => {
             if let Some(theme) = Palette::from_name(name.to_string()) {
                 theme
@@ -101,12 +107,9 @@ fn load_file(path: Value) -> Vec<u8> {
     buffer
 }
 
-fn make_params_err(text: String, span: Option<Span>) -> LabeledError {
-    return LabeledError {
-        label: "faced an error when tried to parse the params".to_string(),
-        msg: text,
-         span,
-    };
+fn make_params_err(text: String, span: Span) -> LabeledError {
+    return LabeledError::new(text)
+        .with_label("faced an error when tried to parse the params", span);
 }
 
 fn load_custom_theme(call: &EvaluatedCall, theme: Palette) -> Palette {

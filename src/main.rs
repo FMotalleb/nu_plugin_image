@@ -1,35 +1,83 @@
-
-use nu_plugin::{self, EvaluatedCall, LabeledError};
+use nu_plugin::{self, EvaluatedCall, Plugin, PluginCommand, SimplePluginCommand};
 use nu_plugin_image::{ansi_to_image, image_to_ansi, FontFamily, Palette};
-use nu_protocol::{Category, PluginExample, PluginSignature, SyntaxShape, Type, Value};
+use nu_protocol::{Category, Signature, SyntaxShape, Type, Value};
 
-pub struct Plugin;
+pub struct ImageConversionPlugin;
 
-impl nu_plugin::Plugin for Plugin {
-    fn signature(&self) -> Vec<PluginSignature> {
+impl Plugin for ImageConversionPlugin {
+    fn commands(&self) -> Vec<Box<dyn PluginCommand<Plugin = Self>>> {
         vec![
-            PluginSignature::build("from png")
-                .named(
-                    "width",
-                    SyntaxShape::Int,
-                    "Output width, in characters.",
-                    Some('x'),
-                )
-                .named(
-                    "height",
-                    SyntaxShape::Int,
-                    "Output height, in characters.",
-                    Some('y'),
-                )
-                .switch(
-                    "verbose",
-                    "prints log of the work into the terminal",
-                    Some('v'),
-                )
-                .usage("create ansi text from an image")
-                .input_output_type(Type::Binary, Type::String)
-                .category(Category::Conversions),
-            PluginSignature::build("to png")
+            Box::new(FromPngCommand::new()),
+            Box::new(ToPngCommand::new()),
+        ]
+    }
+}
+
+struct FromPngCommand;
+impl FromPngCommand {
+    pub fn new() -> FromPngCommand {
+        FromPngCommand {}
+    }
+}
+impl SimplePluginCommand for FromPngCommand {
+    type Plugin = ImageConversionPlugin;
+
+    fn name(&self) -> &str {
+        "from png"
+    }
+
+    fn signature(&self) -> Signature {
+        Signature::build("from png")
+            .named(
+                "width",
+                SyntaxShape::Int,
+                "Output width, in characters.",
+                Some('x'),
+            )
+            .named(
+                "height",
+                SyntaxShape::Int,
+                "Output height, in characters.",
+                Some('y'),
+            )
+            .switch(
+                "verbose",
+                "prints log of the work into the terminal",
+                Some('v'),
+            )
+            .input_output_type(Type::Binary, Type::String)
+            .category(Category::Conversions)
+    }
+
+    fn usage(&self) -> &str {
+        "create ansi text from an image"
+    }
+
+    fn run(
+        &self,
+        _plugin: &Self::Plugin,
+        _engine: &nu_plugin::EngineInterface,
+        call: &EvaluatedCall,
+        input: &Value,
+    ) -> Result<Value, nu_protocol::LabeledError> {
+        image_to_ansi(call, input)
+    }
+}
+struct ToPngCommand;
+impl ToPngCommand {
+    pub fn new() -> ToPngCommand {
+        ToPngCommand {}
+    }
+}
+impl SimplePluginCommand for ToPngCommand {
+    type Plugin = ImageConversionPlugin;
+
+    fn name(&self) -> &str {
+        "to png"
+    }
+
+    fn signature(&self) -> nu_protocol::Signature {
+        Signature::build("to png")
                 .named("width", SyntaxShape::Int, "output width", Some('w'))
                 .named(
                     "output-path",
@@ -74,45 +122,45 @@ impl nu_plugin::Plugin for Plugin {
                     "prints log of the work into the terminal",
                     Some('v'),
                 )
-                .usage("converts ansi string into png image")
-                .extra_usage("if you change font and theme they will be used as base theme of the output and every custom flag you provide will override the selected theme or font")
                 .input_output_type(Type::String, Type::Nothing)
-                .plugin_examples(
-                    vec![
-                        PluginExample{
-                            description: "creates image of `ls` command's output and save it in the `ls.png` file".to_string(),
-                            example: "ls | table -c | to png --theme ubuntu --font Ubuntu --output-path ls.png".to_string(),
-                            result: None,
-                        },
-                        PluginExample{
-                            description: "creates image of `ls` command's output and save it in the `ls.png` file with custom greenish background color".to_string(),
-                            example: "ls | table -c | to png --theme ubuntu --font Ubuntu --custom-theme-bg 0x112411 --output-path ls.png".to_string(),
-                            result: None, 
-                        },
-                    ]
-                )
-                .category(Category::Conversions),
-        ]
+                // .plugin_examples(
+                //     vec![
+                //         PluginExample{
+                //             description: "creates image of `ls` command's output and save it in the `ls.png` file".to_string(),
+                //             example: "ls | table -c | to png --theme ubuntu --font Ubuntu --output-path ls.png".to_string(),
+                //             result: None,
+                //         },
+                //         PluginExample{
+                //             description: "creates image of `ls` command's output and save it in the `ls.png` file with custom greenish background color".to_string(),
+                //             example: "ls | table -c | to png --theme ubuntu --font Ubuntu --custom-theme-bg 0x112411 --output-path ls.png".to_string(),
+                //             result: None, 
+                //         },
+                //     ]
+                // )
+                .category(Category::Conversions)
+    }
+
+    fn usage(&self) -> &str {
+        "converts ansi string into png image"
+    }
+    fn extra_usage(&self) -> &str {
+        "if you change font and theme they will be used as base theme of the output and every custom flag you provide will override the selected theme or font"
     }
 
     fn run(
-        &mut self,
-        name: &str,
-        _config: &Option<Value>,
+        &self,
+        _plugin: &Self::Plugin,
+        _engine: &nu_plugin::EngineInterface,
         call: &EvaluatedCall,
         input: &Value,
-    ) -> Result<Value, LabeledError> {
-        if let Ok(is_verbose) = call.has_flag("verbose"){
-            nu_plugin_image::logging::logger::set_verbose(is_verbose);
-        }
-        match name {
-            "from png" => image_to_ansi(call, input),
-            "to png" => ansi_to_image(call, input),
-            _ => Ok(Value::string("test", call.head)),
-        }
+    ) -> Result<Value, nu_protocol::LabeledError> {
+        ansi_to_image(call, input)
     }
 }
 
 fn main() {
-    nu_plugin::serve_plugin(&mut Plugin {}, nu_plugin::MsgPackSerializer {})
+    nu_plugin::serve_plugin(
+        &mut ImageConversionPlugin {},
+        nu_plugin::MsgPackSerializer {},
+    )
 }
