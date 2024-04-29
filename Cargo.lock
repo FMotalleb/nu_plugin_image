@@ -1226,7 +1226,7 @@ dependencies = [
 
 [[package]]
 name = "nu_plugin_image"
-version = "0.3.3"
+version = "0.4.0"
 dependencies = [
  "ansi_colours",
  "clap",
