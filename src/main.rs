@@ -84,7 +84,6 @@ impl SimplePluginCommand for ToPngCommand {
             "output file path (by default uses current timestamp)",
         )
                 .named("width", SyntaxShape::Int, "output width", Some('w'))
-                .named("width", SyntaxShape::Int, "output width", Some('w'))
                 .named("theme",SyntaxShape::String,format!("select theme of the output, one of: {:?}\n\t\tby default uses `vscode` theme and you can mix this flag with custom theme colors every other colors will be from the selected theme",Palette::list()),Some('t'))
                 .named(
                     "font",
