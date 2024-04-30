@@ -1,8 +1,8 @@
 use std::env;
 
 use image::codecs::png::PngDecoder;
-use nu_plugin::{EvaluatedCall, LabeledError};
-use nu_protocol::{Span, Value};
+use nu_plugin::EvaluatedCall;
+use nu_protocol::{LabeledError, Span, Value};
 
 pub fn image_to_ansi(call: &EvaluatedCall, input: &Value) -> Result<Value, LabeledError> {
     match build_params(call, input) {
@@ -15,9 +15,9 @@ pub fn image_to_ansi(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
 
                     return result
                         .map(|value| Value::string(value, call.head))
-                        .map_err(|err| response_error(err, Some(call.head)));
+                        .map_err(|err| response_error(err, call.head));
                 }
-                Err(er) => Err(response_error(er.to_string(), Some(call.head))),
+                Err(er) => Err(response_error(er.to_string(), call.head)),
             }
         }
         Err(err) => Err(err),
@@ -49,7 +49,7 @@ fn build_params(call: &EvaluatedCall, input: &Value) -> Result<IntoAnsiParams, L
     };
     match input.as_binary() {
         Ok(file) => params.file = file.to_owned(),
-        Err(err) => return Err(make_params_err(err.to_string(), Some(call.head))),
+        Err(err) => return Err(make_params_err(err.to_string(), call.head)),
     };
     params.width = match load_u32(call, "width") {
         Ok(value) => Some(value),
@@ -68,31 +68,25 @@ fn load_u32(call: &EvaluatedCall, flag_name: &str) -> Result<u32, LabeledError> 
         Some(val) => match val {
             Value::Int { .. } => match val.as_int().unwrap().try_into() {
                 Ok(value) => Ok(value),
-                Err(err) => Err(make_params_err(err.to_string(), Some(call.head))),
+                Err(err) => Err(make_params_err(err.to_string(), call.head)),
             },
             _ => Err(make_params_err(
                 format!("value of `{}` is not an integer", flag_name),
-                Some(call.head),
+                call.head,
             )),
         },
         None => Err(make_params_err(
             format!("cannot find `{}` parameter", flag_name),
-            Some(call.head),
+            call.head,
         )),
     }
 }
 
-fn make_params_err(text: String, span: Option<Span>) -> LabeledError {
-    return LabeledError {
-        label: "faced an error when tried to parse the params".to_string(),
-        msg: text,
-        span: span,
-    };
+fn make_params_err(text: String, span: Span) -> LabeledError {
+    return LabeledError::new(text)
+        .with_label("faced an error when tried to parse the params", span);
 }
-fn response_error(text: String, span: Option<Span>) -> LabeledError {
-    return LabeledError {
-        label: "cannot create image".to_string(),
-        msg: text,
-        span: span,
-    };
+
+fn response_error(text: String, span: Span) -> LabeledError {
+    return LabeledError::new(text).with_label("cannot create image", span);
 }

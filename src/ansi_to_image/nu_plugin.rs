@@ -1,7 +1,7 @@
-use std::{env, fs::File, io::Read, path::PathBuf, time::SystemTime};
+use std::{fs::File, io::Read, path::PathBuf, time::SystemTime};
 
-use nu_plugin::{EvaluatedCall, LabeledError};
-use nu_protocol::{Span, Value};
+use nu_plugin::EvaluatedCall;
+use nu_protocol::{LabeledError, Span, Value};
 use rusttype::Font;
 
 use crate::FontFamily;
@@ -11,7 +11,11 @@ use super::{
     palette::{hex_to_rgb, Palette},
 };
 
-pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, LabeledError> {
+pub fn ansi_to_image(
+    engine: &nu_plugin::EngineInterface,
+    call: &EvaluatedCall,
+    input: &Value,
+) -> Result<Value, LabeledError> {
     let i: &[u8] = match input {
         Value::String {
             val,
@@ -24,7 +28,7 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         _ => {
             return Err(make_params_err(
                 "cannot read input as binary data (maybe its empty)".to_string(),
-                Some(input.span()),
+                input.span(),
             ))
         }
     };
@@ -36,8 +40,6 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         _ => None,
     };
     let font: FontFamily<'_> = resolve_font(call);
-    // eprintln!("selected font: {}", font.to_string());
-
     let out_path = call.opt::<String>(0);
     let out = match out_path {
         Ok(path) if path.is_some() => {
@@ -46,7 +48,7 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
         }
         _ => {
             let now = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH);
-            let current = env::current_dir();
+            let current = engine.get_current_dir().map(|p| PathBuf::from(p));
             if let (Ok(now), Ok(current)) = (now, current) {
                 let current = &mut current.clone();
                 current.push(PathBuf::from(format!("nu-image-{}.png", now.as_secs())));
@@ -56,11 +58,10 @@ pub fn ansi_to_image(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
             }
         }
     };
-
     if let None = out {
         return Err(make_params_err(
             format!("cannot use time stamp as the file name timestamp please provide output path explicitly"),
-            Some(call.head),
+            call.head,
         ));
     }
     let theme = match call
@@ -128,14 +129,9 @@ fn load_file(path: Value) -> Vec<u8> {
     buffer
 }
 
-fn make_params_err(text: String, span: Option<Span>) -> LabeledError {
-    return LabeledError {
-        label: "faced an error when tried to parse the params".to_string(),
-        msg: text,
-        span,
-    };
+fn make_params_err(text: String, span: Span) -> LabeledError {
+    LabeledError::new(text).with_label("faced an error when tried to parse the params", span)
 }
-
 fn load_custom_theme(call: &EvaluatedCall, theme: Palette) -> Palette {
     let result = theme.palette().copy_with(
         read_hex_to_array(call, "custom-theme-fg"),
