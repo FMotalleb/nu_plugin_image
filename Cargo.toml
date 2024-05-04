@@ -14,11 +14,11 @@ features = ["derive"]
 version = "4"
 
 [dependencies.nu-plugin]
-version = "0.92.2"
+version = "0.93"
 
 [dependencies.nu-protocol]
 features = ["plugin"]
-version = "0.92.2"
+version = "0.93"
 
 [features]
 all-fonts = ["font-iosevka_term", "font-anonymous_pro", "font-ubuntu"]
