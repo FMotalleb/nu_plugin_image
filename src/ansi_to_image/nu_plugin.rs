@@ -4,7 +4,7 @@ use ab_glyph::FontRef;
 use nu_plugin::EvaluatedCall;
 use nu_protocol::{LabeledError, Span, Value};
 
-use crate::FontFamily;
+use crate::{vlog, FontFamily};
 
 use super::{
     ansi_to_image::make_image,
@@ -41,10 +41,22 @@ pub fn ansi_to_image(
     };
     let font: FontFamily<'_> = resolve_font(call);
     let out_path = call.opt::<String>(0);
+
     let out = match out_path {
-        Ok(path) if path.is_some() => {
-            let option = path.unwrap();
-            Some(PathBuf::from(option))
+        Ok(Some(path)) => {
+            vlog(format!("received output name `{}`", path));
+            if let Ok(value) = engine.get_current_dir() {
+                let mut absolute = PathBuf::from(value);
+                absolute.extend(PathBuf::from(path).iter());
+                vlog(format!(
+                    "absolute output name `{}`",
+                    absolute.to_str().unwrap_or("cannot convert path to string")
+                ));
+                Some(absolute)
+            } else {
+                vlog("failed to fetch current directories path".to_string());
+                Some(PathBuf::from(path))
+            }
         }
         _ => {
             let now = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH);
