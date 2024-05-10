@@ -40,11 +40,18 @@ pub fn ansi_to_image(
         _ => None,
     };
     let font: FontFamily<'_> = resolve_font(call);
+
     let out_path = call.opt::<String>(0);
     let out = match out_path {
         Ok(path) if path.is_some() => {
             let option = path.unwrap();
-            Some(PathBuf::from(option))
+            if let Ok(value) = engine.get_current_dir() {
+                let mut absolute = PathBuf::from(value);
+                absolute.extend(PathBuf::from(option).iter());
+                Some(absolute)
+            } else {
+                Some(PathBuf::from(option))
+            }
         }
         _ => {
             let now = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH);
@@ -60,7 +67,7 @@ pub fn ansi_to_image(
     };
     if let None = out {
         return Err(make_params_err(
-            format!("cannot use time stamp as the file name timestamp please provide output path explicitly"),
+            format!("cannot use timestamp as the file name please provide output path explicitly"),
             call.head,
         ));
     }
