@@ -83,7 +83,10 @@ pub fn ansi_to_image(
     let path = PathBuf::from(out.unwrap());
     make_image(path.as_path(), font, size, i, theme);
 
-    Ok(Value::nothing(call.head))
+    Ok(Value::string(
+        path.to_str().unwrap_or("error reading path").to_owned(),
+        call.head,
+    ))
 }
 
 fn resolve_font(call: &EvaluatedCall) -> FontFamily<'_> {

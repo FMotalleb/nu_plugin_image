@@ -1,5 +1,5 @@
 use nu_plugin::{self, EvaluatedCall, Plugin, PluginCommand, SimplePluginCommand};
-use nu_plugin_image::{ansi_to_image, image_to_ansi, FontFamily, Palette};
+use nu_plugin_image::{ansi_to_image, image_to_ansi, logging::logger, FontFamily, Palette};
 use nu_protocol::{Category, Signature, SyntaxShape, Type, Value};
 
 pub struct ImageConversionPlugin;
@@ -12,8 +12,8 @@ impl Plugin for ImageConversionPlugin {
         ]
     }
 }
-
 struct FromPngCommand;
+
 impl FromPngCommand {
     pub fn new() -> FromPngCommand {
         FromPngCommand {}
@@ -60,6 +60,9 @@ impl SimplePluginCommand for FromPngCommand {
         call: &EvaluatedCall,
         input: &Value,
     ) -> Result<Value, nu_protocol::LabeledError> {
+        if let Ok(value) = call.has_flag("verbose") {
+            logger::set_verbose(value);
+        }
         image_to_ansi(call, input)
     }
 }
@@ -121,7 +124,7 @@ impl SimplePluginCommand for ToPngCommand {
                     "prints log of the work into the terminal",
                     Some('v'),
                 )
-                .input_output_type(Type::String, Type::Nothing)
+                .input_output_type(Type::String, Type::String)
                 // .plugin_examples(
                 //     vec![
                 //         PluginExample{
@@ -153,6 +156,9 @@ impl SimplePluginCommand for ToPngCommand {
         call: &EvaluatedCall,
         input: &Value,
     ) -> Result<Value, nu_protocol::LabeledError> {
+        if let Ok(value) = call.has_flag("verbose") {
+            logger::set_verbose(value);
+        }
         ansi_to_image(engine, call, input)
     }
 }

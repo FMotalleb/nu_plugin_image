@@ -11,7 +11,7 @@ impl LoggerState {
     }
     pub fn log(&self, message: &str) {
         if self.is_verbose {
-            eprintln!("{}", message)
+            println!("{}", message)
         }
     }
 }
