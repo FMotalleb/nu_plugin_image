@@ -1625,7 +1625,7 @@ dependencies = [
 
 [[package]]
 name = "nu_plugin_image"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "ab_glyph",
  "ansi_colours",
@@ -1634,7 +1634,6 @@ dependencies = [
  "image",
  "imageproc",
  "include-flate",
- "lazy_static",
  "nu-plugin",
  "nu-protocol",
  "termcolor",
