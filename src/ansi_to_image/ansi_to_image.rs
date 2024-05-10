@@ -1,5 +1,4 @@
 use image::RgbImage;
-use rusttype::Scale;
 use std::{
     io::{BufReader, Read},
     path::Path,
@@ -11,6 +10,8 @@ use crate::ansi_to_image::{
     palette::Palette,
     printer::{self, Settings},
 };
+
+use super::internal_scale::InternalScale;
 
 pub fn make_image(
     output_path: &Path,
@@ -27,7 +28,7 @@ pub fn make_image(
     let font_italic_bold = font_family.bold_italic;
 
     let font_height = 50.0;
-    let scale = Scale {
+    let scale = InternalScale {
         x: font_height,
         y: font_height,
     };

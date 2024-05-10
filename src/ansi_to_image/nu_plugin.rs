@@ -1,10 +1,10 @@
 use std::{fs::File, io::Read, path::PathBuf, time::SystemTime};
 
+use ab_glyph::FontRef;
 use nu_plugin::EvaluatedCall;
 use nu_protocol::{LabeledError, Span, Value};
-use rusttype::Font;
 
-use crate::FontFamily;
+use crate::{vlog, FontFamily};
 
 use super::{
     ansi_to_image::make_image,
@@ -40,17 +40,22 @@ pub fn ansi_to_image(
         _ => None,
     };
     let font: FontFamily<'_> = resolve_font(call);
-
     let out_path = call.opt::<String>(0);
+
     let out = match out_path {
-        Ok(path) if path.is_some() => {
-            let option = path.unwrap();
+        Ok(Some(path)) => {
+            vlog(format!("received output name `{}`", path));
             if let Ok(value) = engine.get_current_dir() {
                 let mut absolute = PathBuf::from(value);
-                absolute.extend(PathBuf::from(option).iter());
+                absolute.extend(PathBuf::from(path).iter());
+                vlog(format!(
+                    "absolute output name `{}`",
+                    absolute.to_str().unwrap_or("cannot convert path to string")
+                ));
                 Some(absolute)
             } else {
-                Some(PathBuf::from(option))
+                vlog("failed to fetch current directories path".to_string());
+                Some(PathBuf::from(path))
             }
         }
         _ => {
@@ -67,7 +72,7 @@ pub fn ansi_to_image(
     };
     if let None = out {
         return Err(make_params_err(
-            format!("cannot use timestamp as the file name please provide output path explicitly"),
+            format!("cannot use time stamp as the file name timestamp please provide output path explicitly"),
             call.head,
         ));
     }
@@ -96,8 +101,8 @@ pub fn ansi_to_image(
     ))
 }
 
-fn resolve_font(call: &EvaluatedCall) -> FontFamily<'_> {
-    let mut font = match call.get_flag_value("font").map(|value| match value {
+fn resolve_font(call: &EvaluatedCall) -> FontFamily<'static> {
+    let mut font: FontFamily<'static> = match call.get_flag_value("font").map(|value| match value {
         Value::String { val, .. } => Some(FontFamily::from_name(val)),
         _ => None,
     }) {
@@ -110,33 +115,42 @@ fn resolve_font(call: &EvaluatedCall) -> FontFamily<'_> {
         }
         None => FontFamily::default(),
     };
+    // TODO custom fonts disabled for now
     if let Some(path) = call.get_flag_value("font-regular") {
         let buffer = load_file(path);
-        font.regular = Font::try_from_vec(buffer).unwrap();
+        font.regular = FontRef::try_from_slice(buffer).unwrap();
     }
     if let Some(path) = call.get_flag_value("font-bold") {
         let buffer = load_file(path);
-        font.bold = Font::try_from_vec(buffer).unwrap();
+        font.bold = FontRef::try_from_slice(buffer).unwrap();
     }
     if let Some(path) = call.get_flag_value("font-italic") {
         let buffer = load_file(path);
-        font.italic = Font::try_from_vec(buffer).unwrap();
+        font.italic = FontRef::try_from_slice(buffer).unwrap();
     }
     if let Some(path) = call.get_flag_value("bold-italic") {
         let buffer = load_file(path);
-        font.bold_italic = Font::try_from_vec(buffer).unwrap();
+        font.bold_italic = FontRef::try_from_slice(buffer).unwrap();
     }
     font
 }
 
-fn load_file(path: Value) -> Vec<u8> {
+// fn load_file<'a>(path: Value) -> &'a [u8] {
+//     let path = path.as_str().unwrap();
+//     let mut file = File::open(PathBuf::from(path)).unwrap();
+//     let mut buffer = Vec::new();
+
+//     // read the whole file
+//     let _ = file.read_to_end(&mut buffer);
+//     buffer.as_slice()
+// }
+
+fn load_file<'a>(path: Value) -> &'a [u8] {
     let path = path.as_str().unwrap();
     let mut file = File::open(PathBuf::from(path)).unwrap();
-    let mut buffer = Vec::new();
-
-    // read the whole file
-    let _ = file.read_to_end(&mut buffer);
-    buffer
+    let mut buffer: Box<Vec<u8>> = Box::new(vec![]);
+    file.read_to_end(&mut *buffer).unwrap();
+    Box::leak(buffer)
 }
 
 fn make_params_err(text: String, span: Span) -> LabeledError {

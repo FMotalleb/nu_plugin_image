@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, io::Cursor};
 
 use image::codecs::png::PngDecoder;
 use nu_plugin::EvaluatedCall;
@@ -7,7 +7,7 @@ use nu_protocol::{LabeledError, Span, Value};
 pub fn image_to_ansi(call: &EvaluatedCall, input: &Value) -> Result<Value, LabeledError> {
     match build_params(call, input) {
         Ok(params) => {
-            let img = PngDecoder::new(params.file.as_slice())
+            let img = PngDecoder::new(Cursor::new(params.file.as_slice()))
                 .map(|img| image::DynamicImage::from_decoder(img));
             match img {
                 Ok(img) => {
