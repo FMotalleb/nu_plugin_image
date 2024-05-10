@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
 use nu_protocol::Value;
-use tracing::level_filters::LevelFilter;
+use tracing::{dispatcher, level_filters::LevelFilter};
 use tracing_subscriber::{
     filter::Targets, layer::SubscriberExt, util::SubscriberInitExt, FmtSubscriber,
 };
@@ -13,11 +13,13 @@ pub fn init_logger(call: &nu_plugin::EvaluatedCall) {
     let subscriber = builder.finish();
     let subscriber = {
         let targets = match call.get_flag_value("log-level") {
-            Some(Value::String { val, .. }) => Targets::from_str(&val)
-                .map_err(|e| {
+            Some(Value::String { val, .. }) => {
+                Targets::from_str(format!("nu_plugin_image={val}").as_str()).unwrap_or_else(|e| {
                     eprintln!("Ignoring `log-level={:?}`: {}", val, e);
+                    eprintln!("Defaulting to INFO level due to parsing error.");
+                    Targets::from_str("INFO").unwrap()
                 })
-                .unwrap_or_default(),
+            }
 
             _ => {
                 eprintln!("using default value for `log-level` as INFO");
@@ -28,8 +30,8 @@ pub fn init_logger(call: &nu_plugin::EvaluatedCall) {
                     .unwrap_or_default()
             }
         };
+
         subscriber.with(targets)
     };
-
     subscriber.init();
 }
