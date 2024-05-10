@@ -1,19 +1,35 @@
-use std::sync::Mutex;
+use std::str::FromStr;
 
-use include_flate::lazy_static;
+use nu_protocol::Value;
+use tracing::level_filters::LevelFilter;
+use tracing_subscriber::{
+    filter::Targets, layer::SubscriberExt, util::SubscriberInitExt, FmtSubscriber,
+};
 
-use super::logger_state::*;
+pub fn init_logger(call: &nu_plugin::EvaluatedCall) {
+    let builder = FmtSubscriber::builder();
+    let builder = builder.with_max_level(LevelFilter::TRACE);
 
-lazy_static! {
-    pub static ref LOGGER: Mutex<LoggerState> = Mutex::new(LoggerState::new(false));
-}
-pub fn set_verbose(state: bool) {
-    if let Ok(mut logger) = LOGGER.lock() {
-        logger.set_verbose(state);
-    }
-}
-pub fn vlog(message: String) {
-    if let Ok(logger) = LOGGER.lock() {
-        logger.log(&message);
-    }
+    let subscriber = builder.finish();
+    let subscriber = {
+        let targets = match call.get_flag_value("log-level") {
+            Some(Value::String { val, .. }) => Targets::from_str(&val)
+                .map_err(|e| {
+                    eprintln!("Ignoring `log-level={:?}`: {}", val, e);
+                })
+                .unwrap_or_default(),
+
+            _ => {
+                eprintln!("using default value for `log-level` as INFO");
+                Targets::from_str("INFO")
+                    .map_err(|e| {
+                        eprintln!("Ignoring `log-level=INFO`: {}", e);
+                    })
+                    .unwrap_or_default()
+            }
+        };
+        subscriber.with(targets)
+    };
+
+    subscriber.init();
 }

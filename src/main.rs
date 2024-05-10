@@ -1,5 +1,5 @@
 use nu_plugin::{self, EvaluatedCall, Plugin, PluginCommand, SimplePluginCommand};
-use nu_plugin_image::{ansi_to_image, image_to_ansi, logging::logger, FontFamily, Palette};
+use nu_plugin_image::{ansi_to_image, image_to_ansi, init_logger, FontFamily, Palette};
 use nu_protocol::{Category, Signature, SyntaxShape, Type, Value};
 
 pub struct ImageConversionPlugin;
@@ -40,10 +40,11 @@ impl SimplePluginCommand for FromPngCommand {
                 "Output height, in characters.",
                 Some('y'),
             )
-            .switch(
-                "verbose",
-                "prints log of the work into the terminal",
-                Some('v'),
+            .named(
+                "log-level",
+                SyntaxShape::String,
+                "sets log level (OFF ERROR WARN INFO DEBUG TRACE) defaults to INFO",
+                None,
             )
             .input_output_type(Type::Binary, Type::String)
             .category(Category::Conversions)
@@ -60,9 +61,7 @@ impl SimplePluginCommand for FromPngCommand {
         call: &EvaluatedCall,
         input: &Value,
     ) -> Result<Value, nu_protocol::LabeledError> {
-        if let Ok(value) = call.has_flag("verbose") {
-            logger::set_verbose(value);
-        }
+        init_logger(call);
         image_to_ansi(call, input)
     }
 }
@@ -119,10 +118,11 @@ impl SimplePluginCommand for ToPngCommand {
                 .named("custom-theme-bright_magenta", SyntaxShape::Int, "custom bright magenta color in hex format (0x040404)", None)
                 .named("custom-theme-bright_cyan", SyntaxShape::Int, "custom bright cyan color in hex format (0x040404)", None)
                 .named("custom-theme-bright_white", SyntaxShape::Int, "custom bright white color in hex format (0x040404)", None)
-                .switch(
-                    "verbose",
-                    "prints log of the work into the terminal",
-                    Some('v'),
+                .named(
+                    "log-level",
+                    SyntaxShape::String,
+                    "sets log level (OFF ERROR WARN INFO DEBUG TRACE) defaults to INFO",
+                    None,
                 )
                 .input_output_type(Type::String, Type::String)
                 // .plugin_examples(
@@ -156,9 +156,7 @@ impl SimplePluginCommand for ToPngCommand {
         call: &EvaluatedCall,
         input: &Value,
     ) -> Result<Value, nu_protocol::LabeledError> {
-        if let Ok(value) = call.has_flag("verbose") {
-            logger::set_verbose(value);
-        }
+        init_logger(call);
         ansi_to_image(engine, call, input)
     }
 }
