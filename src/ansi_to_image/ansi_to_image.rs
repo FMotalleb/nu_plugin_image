@@ -3,6 +3,7 @@ use std::{
     io::{BufReader, Read},
     path::Path,
 };
+use tracing::warn;
 use vte::Parser;
 
 use crate::ansi_to_image::{
@@ -60,7 +61,7 @@ pub fn make_image(
             }
 
             Err(err) => {
-                crate::vlog(format!("err: {err}"));
+                warn!("{err}");
                 break;
             }
         }
