@@ -1,4 +1,4 @@
-use std::{borrow::Borrow, fs::File, io::Read, path::PathBuf, time::SystemTime};
+use std::{fs::File, io::Read, path::PathBuf, time::SystemTime};
 
 use ab_glyph::FontRef;
 use nu_plugin::EvaluatedCall;
@@ -104,33 +104,41 @@ fn resolve_font(call: &EvaluatedCall) -> FontFamily<'static> {
         None => FontFamily::default(),
     };
     // TODO custom fonts disabled for now
-    // if let Some(path) = call.get_flag_value("font-regular") {
-    //     let buffer = load_file(path).as_slice();
-    //     font.regular = FontRef::try_from_slice(buffer).unwrap();
-    // }
-    // if let Some(path) = call.get_flag_value("font-bold") {
-    //     let buffer = load_file(path).as_slice();
-    //     font.bold = FontRef::try_from_slice(buffer).unwrap();
-    // }
-    // if let Some(path) = call.get_flag_value("font-italic") {
-    //     let buffer = load_file(path).as_slice();
-    //     font.italic = FontRef::try_from_slice(buffer).unwrap();
-    // }
-    // if let Some(path) = call.get_flag_value("bold-italic") {
-    //     let buffer = load_file(path).as_slice();
-    //     font.bold_italic = FontRef::try_from_slice(buffer).unwrap();
-    // }
+    if let Some(path) = call.get_flag_value("font-regular") {
+        let buffer = load_file(path);
+        font.regular = FontRef::try_from_slice(buffer).unwrap();
+    }
+    if let Some(path) = call.get_flag_value("font-bold") {
+        let buffer = load_file(path);
+        font.bold = FontRef::try_from_slice(buffer).unwrap();
+    }
+    if let Some(path) = call.get_flag_value("font-italic") {
+        let buffer = load_file(path);
+        font.italic = FontRef::try_from_slice(buffer).unwrap();
+    }
+    if let Some(path) = call.get_flag_value("bold-italic") {
+        let buffer = load_file(path);
+        font.bold_italic = FontRef::try_from_slice(buffer).unwrap();
+    }
     font
 }
 
-fn load_file(path: Value) -> Vec<u8> {
+// fn load_file<'a>(path: Value) -> &'a [u8] {
+//     let path = path.as_str().unwrap();
+//     let mut file = File::open(PathBuf::from(path)).unwrap();
+//     let mut buffer = Vec::new();
+
+//     // read the whole file
+//     let _ = file.read_to_end(&mut buffer);
+//     buffer.as_slice()
+// }
+
+fn load_file<'a>(path: Value) -> &'a [u8] {
     let path = path.as_str().unwrap();
     let mut file = File::open(PathBuf::from(path)).unwrap();
-    let mut buffer = Vec::new();
-
-    // read the whole file
-    let _ = file.read_to_end(&mut buffer);
-    buffer
+    let mut buffer: Box<Vec<u8>> = Box::new(vec![]);
+    file.read_to_end(&mut *buffer).unwrap();
+    Box::leak(buffer)
 }
 
 fn make_params_err(text: String, span: Span) -> LabeledError {

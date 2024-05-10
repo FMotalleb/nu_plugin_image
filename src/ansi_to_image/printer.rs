@@ -1,4 +1,4 @@
-use ab_glyph::{Font, FontRef, Glyph, GlyphId, Point};
+use ab_glyph::{Font, FontRef, Glyph, Point};
 use image::{Rgb, RgbImage};
 use imageproc::drawing::draw_text_mut;
 use std::collections::BTreeMap;
