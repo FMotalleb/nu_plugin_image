@@ -1,16 +1,16 @@
 use std::fmt;
 use std::fmt::{Display, Formatter};
 
+use ab_glyph::FontRef;
 use include_flate::flate;
-use rusttype::Font;
 type FontBuilder = fn() -> FontFamily<'static>;
 #[derive(Debug)]
 pub struct FontFamily<'a> {
     pub name: String,
-    pub regular: Font<'a>,
-    pub bold: Font<'a>,
-    pub italic: Font<'a>,
-    pub bold_italic: Font<'a>,
+    pub regular: FontRef<'a>,
+    pub bold: FontRef<'a>,
+    pub italic: FontRef<'a>,
+    pub bold_italic: FontRef<'a>,
 }
 
 impl FontFamily<'static> {
@@ -44,12 +44,12 @@ impl FontFamily<'static> {
         italic: &'static [u8],
         bold_italic: &'static [u8],
     ) -> Option<FontFamily<'static>> {
-        let regular = Font::try_from_bytes(regular);
-        let bold = Font::try_from_bytes(bold);
-        let italic = Font::try_from_bytes(italic);
-        let bold_italic = Font::try_from_bytes(bold_italic);
+        let regular = FontRef::try_from_slice(regular);
+        let bold = FontRef::try_from_slice(bold);
+        let italic = FontRef::try_from_slice(italic);
+        let bold_italic = FontRef::try_from_slice(bold_italic);
         match (regular, bold, italic, bold_italic) {
-            (Some(regular), Some(bold), Some(italic), Some(bold_italic)) => {
+            (Ok(regular), Ok(bold), Ok(italic), Ok(bold_italic)) => {
                 return Some(FontFamily {
                     name: name.unwrap_or("Custom".to_string()),
                     regular,

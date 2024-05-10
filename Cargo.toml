@@ -2,10 +2,10 @@
 termcolor = "1.1"
 ansi_colours = "1.0"
 crossterm = "0.27"
-image = "0.24.7"
-imageproc = "0.23"
+image = "0.25.1"
+imageproc = "0.24"
 include-flate = "0.3"
-rusttype = "0.9"
+ab_glyph = "0.2.25"
 vte = "0.13"
 lazy_static = "1.4.0"
 

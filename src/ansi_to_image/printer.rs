@@ -1,18 +1,20 @@
+use ab_glyph::{Font, FontRef, Glyph, Point};
 use image::{Rgb, RgbImage};
 use imageproc::drawing::draw_text_mut;
-use rusttype::{Font, Scale};
 use std::collections::BTreeMap;
 use vte::{Params, Perform};
 
 use crate::ansi_to_image::{color::ColorType, escape_parser::EscapeSequence, palette::Palette};
 
+use super::internal_scale::InternalScale;
+
 pub(super) struct Settings<'a> {
-    pub(super) font: Font<'a>,
-    pub(super) font_bold: Font<'a>,
-    pub(super) font_italic: Font<'a>,
-    pub(super) font_italic_bold: Font<'a>,
+    pub(super) font: FontRef<'a>,
+    pub(super) font_bold: FontRef<'a>,
+    pub(super) font_italic: FontRef<'a>,
+    pub(super) font_italic_bold: FontRef<'a>,
     pub(super) font_height: f32,
-    pub(super) scale: Scale,
+    pub(super) scale: InternalScale,
     pub(super) palette: Palette,
     pub(super) png_width: Option<u32>,
 }
@@ -62,10 +64,12 @@ pub(super) struct Printer<'a> {
 pub(super) fn new(settings: Settings) -> Printer {
     let glyph_advance_width = settings
         .font
-        .glyph('_')
-        .scaled(settings.scale)
-        .h_metrics()
-        .advance_width;
+        .glyph_bounds(&Glyph {
+            id: settings.font.glyph_id('_'),
+            scale: settings.scale.into(),
+            position: Point { x: 0.0, y: 0.0 },
+        })
+        .width();
 
     let new_line_distance = settings.font_height as u32;
 
