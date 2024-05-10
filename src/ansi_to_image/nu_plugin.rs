@@ -1,8 +1,8 @@
-use std::{fs::File, io::Read, path::PathBuf, time::SystemTime};
+use std::{borrow::Borrow, fs::File, io::Read, path::PathBuf, time::SystemTime};
 
+use ab_glyph::FontRef;
 use nu_plugin::EvaluatedCall;
 use nu_protocol::{LabeledError, Span, Value};
-use rusttype::Font;
 
 use crate::FontFamily;
 
@@ -40,18 +40,11 @@ pub fn ansi_to_image(
         _ => None,
     };
     let font: FontFamily<'_> = resolve_font(call);
-
     let out_path = call.opt::<String>(0);
     let out = match out_path {
         Ok(path) if path.is_some() => {
             let option = path.unwrap();
-            if let Ok(value) = engine.get_current_dir() {
-                let mut absolute = PathBuf::from(value);
-                absolute.extend(PathBuf::from(option).iter());
-                Some(absolute)
-            } else {
-                Some(PathBuf::from(option))
-            }
+            Some(PathBuf::from(option))
         }
         _ => {
             let now = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH);
@@ -67,7 +60,7 @@ pub fn ansi_to_image(
     };
     if let None = out {
         return Err(make_params_err(
-            format!("cannot use timestamp as the file name please provide output path explicitly"),
+            format!("cannot use time stamp as the file name timestamp please provide output path explicitly"),
             call.head,
         ));
     }
@@ -96,8 +89,8 @@ pub fn ansi_to_image(
     ))
 }
 
-fn resolve_font(call: &EvaluatedCall) -> FontFamily<'_> {
-    let mut font = match call.get_flag_value("font").map(|value| match value {
+fn resolve_font(call: &EvaluatedCall) -> FontFamily<'static> {
+    let mut font: FontFamily<'static> = match call.get_flag_value("font").map(|value| match value {
         Value::String { val, .. } => Some(FontFamily::from_name(val)),
         _ => None,
     }) {
@@ -110,22 +103,23 @@ fn resolve_font(call: &EvaluatedCall) -> FontFamily<'_> {
         }
         None => FontFamily::default(),
     };
-    if let Some(path) = call.get_flag_value("font-regular") {
-        let buffer = load_file(path);
-        font.regular = Font::try_from_vec(buffer).unwrap();
-    }
-    if let Some(path) = call.get_flag_value("font-bold") {
-        let buffer = load_file(path);
-        font.bold = Font::try_from_vec(buffer).unwrap();
-    }
-    if let Some(path) = call.get_flag_value("font-italic") {
-        let buffer = load_file(path);
-        font.italic = Font::try_from_vec(buffer).unwrap();
-    }
-    if let Some(path) = call.get_flag_value("bold-italic") {
-        let buffer = load_file(path);
-        font.bold_italic = Font::try_from_vec(buffer).unwrap();
-    }
+    // TODO custom fonts disabled for now
+    // if let Some(path) = call.get_flag_value("font-regular") {
+    //     let buffer = load_file(path).as_slice();
+    //     font.regular = FontRef::try_from_slice(buffer).unwrap();
+    // }
+    // if let Some(path) = call.get_flag_value("font-bold") {
+    //     let buffer = load_file(path).as_slice();
+    //     font.bold = FontRef::try_from_slice(buffer).unwrap();
+    // }
+    // if let Some(path) = call.get_flag_value("font-italic") {
+    //     let buffer = load_file(path).as_slice();
+    //     font.italic = FontRef::try_from_slice(buffer).unwrap();
+    // }
+    // if let Some(path) = call.get_flag_value("bold-italic") {
+    //     let buffer = load_file(path).as_slice();
+    //     font.bold_italic = FontRef::try_from_slice(buffer).unwrap();
+    // }
     font
 }
 
