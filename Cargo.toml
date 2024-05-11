@@ -8,6 +8,9 @@ include-flate = "0.3"
 ab_glyph = "0.2.25"
 vte = "0.13"
 lazy_static = "1.4.0"
+slog = "2.7.0"
+slog-term = "2.9.1"
+slog-async = "2.8.0"
 
 [dependencies.clap]
 features = ["derive"]
