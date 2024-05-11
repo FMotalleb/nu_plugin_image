@@ -3,4 +3,3 @@ mod image_to_ansi;
 pub mod logging;
 pub use ansi_to_image::*;
 pub use image_to_ansi::*;
-pub use logging::logger::vlog;

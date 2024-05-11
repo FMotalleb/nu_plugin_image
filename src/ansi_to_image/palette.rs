@@ -1,5 +1,7 @@
 use std::fmt::Debug;
 
+use crate::warn;
+
 use crate::ansi_to_image::color::{Color, ColorType};
 type ColorOption = Option<[u8; 3]>;
 #[allow(dead_code)]
@@ -843,21 +845,17 @@ fn hex_from_env(var_name: &str) -> [u8; 3] {
         Ok(code) => match code.parse::<i64>() {
             Ok(val) => hex_to_rgb(val),
             Err(err) => {
-                crate::vlog(format!(
+                warn!(
                     "cannot parse env var {}, value: {}, err: {}",
                     var_name,
                     code,
                     err.to_string()
-                ));
+                );
                 [0, 0, 0]
             }
         },
         Err(err) => {
-            crate::vlog(format!(
-                "cannot read env var {}, err: {}",
-                var_name,
-                err.to_string()
-            ));
+            warn!("cannot read env var {}, err: {}", var_name, err.to_string());
             [0, 0, 0]
         }
     }

@@ -1,3 +1,4 @@
+use crate::{trace, warn};
 use ab_glyph::{Font, FontRef, Glyph, Point};
 use image::{Rgb, RgbImage};
 use imageproc::drawing::draw_text_mut;
@@ -140,37 +141,35 @@ impl<'a> Perform for Printer<'a> {
                 self.state.current_y += self.settings_internal.new_line_distance;
             }
 
-            _ => crate::vlog(format!("[execute] {byte}, {byte:02x}")),
+            _ => trace!("[execute] {byte}, {byte:02x}"),
         }
 
         self.state.last_execute_byte = Some(byte)
     }
 
     fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
-        crate::vlog(format!(
+        trace!(
             "[hook] params={params:?}, intermediates={intermediates:?}, ignore={ignore:?}, \
              char={c:?}"
-        ));
+        );
     }
 
     fn put(&mut self, byte: u8) {
-        crate::vlog(format!("[put] {byte:02x}"));
+        trace!("[put] {byte:02x}");
     }
 
     fn unhook(&mut self) {
-        crate::vlog(format!("[unhook]"));
+        trace!("[unhook]");
     }
 
     fn osc_dispatch(&mut self, params: &[&[u8]], bell_terminated: bool) {
-        crate::vlog(format!(
-            "[osc_dispatch] params={params:?} bell_terminated={bell_terminated}2"
-        ));
+        trace!("[osc_dispatch] params={params:?} bell_terminated={bell_terminated}2");
     }
 
-    fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
-        crate::vlog(format!(
-            "[csi_dispatch] params={params:?}, intermediates={intermediates:?}, ignore={ignore:?}, char={c:?}"
-        ));
+    fn csi_dispatch(&mut self, params: &Params, _intermediates: &[u8], _ignore: bool, _c: char) {
+        // trace!(
+        //     "[csi_dispatch] params={params:?}, intermediates={intermediates:?}, ignore={ignore:?}, char={c:?}"
+        // );
         let actions = EscapeSequence::parse_params(params.iter().flatten().collect::<Vec<_>>());
 
         for action in actions {
@@ -221,12 +220,12 @@ impl<'a> Perform for Printer<'a> {
                 | EscapeSequence::NotReserved
                 | EscapeSequence::NormalIntensity
                 | EscapeSequence::RapidBlink => {
-                    crate::vlog(format!("not implemented for action: {action:?}"))
+                    warn!("not implemented for action: {action:?}")
                 }
                 EscapeSequence::Unimplemented(value) => {
-                    crate::vlog(format!("not implemented for value: {value:?}"))
+                    warn!("not implemented for value: {value:?}")
                 }
-                EscapeSequence::Ignore => crate::vlog(format!("ignored sequence")),
+                EscapeSequence::Ignore => trace!("ignored sequence"),
             }
         }
     }

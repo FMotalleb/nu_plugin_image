@@ -4,16 +4,24 @@ use std log
 # TODO add licenses
 let fonts = [
     {
-        name: AnonymousPro,
+        name: "AnonymousPro Font",
         feature: font-anonymous_pro 
     },
     {
-        name: IosevkaTerm,
+        name: "IosevkaTerm Font",
         feature: font-iosevka_term 
     },
     {
-        name: Ubuntu,
+        name: "Ubuntu Font",
         feature: font-ubuntu 
+    },
+    {
+        name: "Debug log level (only used for debuging)",
+        feature: with-debug
+    },
+    {
+        name: "Trace log level (only used for advanced debuging)",
+        feature: with-trace 
     },
 ]
 
@@ -21,7 +29,7 @@ def main [package_file: path] {
     let repo_root = $package_file | path dirname
     let install_root = $env.NUPM_HOME | path join "plugins"
     let selected_fonts = $fonts 
-        | input list -m "select other fonts to install"
+        | input list -m "select features to install"
         | get feature
     
     let name = open ($repo_root | path join "Cargo.toml") | get package.name
@@ -29,7 +37,7 @@ def main [package_file: path] {
     let command = $"cargo install --path ($repo_root) --root ($install_root) --features=\"($selected_fonts | str join ',')\""
     log info $"building using `($command)`" 
     nu --commands $"($command)"
-    nu --commands $"register ($install_root | path join "bin" $name)($ext)"
+    plugin add $"($install_root | path join "bin" $name)($ext)"
     log info "do not forget to restart Nushell for the plugin to be fully available!"
     nu ($repo_root | path join scripts theme_exporter.nu)
 }

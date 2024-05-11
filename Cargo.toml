@@ -1,4 +1,5 @@
 [dependencies]
+slog = "2.7.0"
 termcolor = "1.1"
 ansi_colours = "1.0"
 crossterm = "0.27"
@@ -8,6 +9,8 @@ include-flate = "0.3"
 ab_glyph = "0.2.25"
 vte = "0.13"
 lazy_static = "1.4.0"
+slog-term = "2.9.1"
+slog-async = "2.8.0"
 
 [dependencies.clap]
 features = ["derive"]
@@ -27,6 +30,9 @@ font-anonymous_pro = []
 font-iosevka_term = []
 font-ubuntu = []
 
+with-debug = ["slog/max_level_debug", "slog/release_max_level_debug"]
+with-trace = ["slog/max_level_trace", "slog/release_max_level_trace"]
+
 [package]
 authors = ["Motalleb Fallahnezhad <fmotalleb@gmail.com>"]
 description = "A nushell plugin to open png images in the shell and save ansi string as images (like tables or ...)"
@@ -37,4 +43,4 @@ license = "MIT"
 name = "nu_plugin_image"
 readme = "README.md"
 repository = "https://github.com/FMotalleb/nu_plugin_image"
-version = "0.5.0"
+version = "0.5.1"

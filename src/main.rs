@@ -40,10 +40,11 @@ impl SimplePluginCommand for FromPngCommand {
                 "Output height, in characters.",
                 Some('y'),
             )
-            .switch(
-                "verbose",
-                "prints log of the work into the terminal",
-                Some('v'),
+            .named(
+                "log-level",
+                SyntaxShape::String,
+                "sets log level (CRITICAL (c) ERROR (e) WARN (w) INFO (i) DEBUG (d) TRACE (t)) defaults to INFO",
+                None,
             )
             .input_output_type(Type::Binary, Type::String)
             .category(Category::Conversions)
@@ -60,8 +61,8 @@ impl SimplePluginCommand for FromPngCommand {
         call: &EvaluatedCall,
         input: &Value,
     ) -> Result<Value, nu_protocol::LabeledError> {
-        if let Ok(value) = call.has_flag("verbose") {
-            logger::set_verbose(value);
+        if let Some(Value::String { val, .. }) = call.get_flag_value("log-level") {
+            logger::set_verbose(val);
         }
         image_to_ansi(call, input)
     }
@@ -119,10 +120,11 @@ impl SimplePluginCommand for ToPngCommand {
                 .named("custom-theme-bright_magenta", SyntaxShape::Int, "custom bright magenta color in hex format (0x040404)", None)
                 .named("custom-theme-bright_cyan", SyntaxShape::Int, "custom bright cyan color in hex format (0x040404)", None)
                 .named("custom-theme-bright_white", SyntaxShape::Int, "custom bright white color in hex format (0x040404)", None)
-                .switch(
-                    "verbose",
-                    "prints log of the work into the terminal",
-                    Some('v'),
+                .named(
+                    "log-level",
+                    SyntaxShape::String,
+                    "sets log level (CRITICAL (c) ERROR (e) WARN (w) INFO (i) DEBUG (d) TRACE (t)) defaults to INFO",
+                    None,
                 )
                 .input_output_type(Type::String, Type::String)
                 // .plugin_examples(
@@ -156,8 +158,8 @@ impl SimplePluginCommand for ToPngCommand {
         call: &EvaluatedCall,
         input: &Value,
     ) -> Result<Value, nu_protocol::LabeledError> {
-        if let Ok(value) = call.has_flag("verbose") {
-            logger::set_verbose(value);
+        if let Some(Value::String { val, .. }) = call.get_flag_value("log-level") {
+            logger::set_verbose(val);
         }
         ansi_to_image(engine, call, input)
     }

@@ -19,7 +19,12 @@ to:  <img src="https://github.com/FMotalleb/nu_plugin_image/assets/30149519/c325
 
 ## Installing
 
-* using [nupm](https://github.com/nushell/nupm)
+Cargo Features:
+
+* fonts:
+* log level:
+
+* using [nupm](https://github.com/nushell/nupm) (preferred)
 
 ```bash
 git clone https://github.com/FMotalleb/nu_plugin_image.git

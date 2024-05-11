@@ -5,10 +5,13 @@ use std::{
 };
 use vte::Parser;
 
-use crate::ansi_to_image::{
-    font_family::FontFamily,
-    palette::Palette,
-    printer::{self, Settings},
+use crate::{
+    ansi_to_image::{
+        font_family::FontFamily,
+        palette::Palette,
+        printer::{self, Settings},
+    },
+    warn,
 };
 
 use super::internal_scale::InternalScale;
@@ -60,7 +63,7 @@ pub fn make_image(
             }
 
             Err(err) => {
-                crate::vlog(format!("err: {err}"));
+                warn!("{err}");
                 break;
             }
         }
