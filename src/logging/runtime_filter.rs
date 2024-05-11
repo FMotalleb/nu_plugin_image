@@ -14,6 +14,7 @@ pub struct RuntimeLevelFilter<D> {
     pub on: Arc<atomic::AtomicU8>,
 }
 
+unsafe impl<D> Sync for RuntimeLevelFilter<D> {}
 impl<D> Drain for RuntimeLevelFilter<D>
 where
     D: Drain,
@@ -26,7 +27,8 @@ where
         record: &slog::Record,
         values: &slog::OwnedKVList,
     ) -> result::Result<Self::Ok, Self::Err> {
-        let current_level = match self.on.load(Ordering::Relaxed) {
+        let level_id = self.on.load(Ordering::SeqCst);
+        let current_level = match level_id {
             0 => slog::Level::Trace,
             1 => slog::Level::Debug,
             2 => slog::Level::Info,
@@ -35,7 +37,6 @@ where
             5 => slog::Level::Critical,
             _ => slog::Level::Info,
         };
-
         if record.level().is_at_least(current_level) {
             self.drain.log(record, values).map(Some).map_err(Some)
         } else {

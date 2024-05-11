@@ -1,10 +1,11 @@
 use std::{fs::File, io::Read, path::PathBuf, time::SystemTime};
 
+use crate::{debug, error, warn};
 use ab_glyph::FontRef;
 use nu_plugin::EvaluatedCall;
 use nu_protocol::{LabeledError, Span, Value};
 
-use crate::{vlog, FontFamily};
+use crate::FontFamily;
 
 use super::{
     ansi_to_image::make_image,
@@ -44,17 +45,17 @@ pub fn ansi_to_image(
 
     let out = match out_path {
         Ok(Some(path)) => {
-            vlog(format!("received output name `{}`", path));
+            debug!("received output name `{}`", path);
             if let Ok(value) = engine.get_current_dir() {
                 let mut absolute = PathBuf::from(value);
                 absolute.extend(PathBuf::from(path).iter());
-                vlog(format!(
+                debug!(
                     "absolute output name `{}`",
                     absolute.to_str().unwrap_or("cannot convert path to string")
-                ));
+                );
                 Some(absolute)
             } else {
-                vlog("failed to fetch current directories path".to_string());
+                warn!("failed to fetch current directories path");
                 Some(PathBuf::from(path))
             }
         }
@@ -84,7 +85,7 @@ pub fn ansi_to_image(
             if let Some(theme) = Palette::from_name(name.to_string()) {
                 theme
             } else {
-                crate::vlog("No theme found that matches the given name".to_string());
+                error!("No theme found that matches the given name");
                 Palette::default()
             }
         }
