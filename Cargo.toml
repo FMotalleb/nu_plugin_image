@@ -4,7 +4,7 @@ termcolor = "1.1"
 ansi_colours = "1.0"
 crossterm = "0.27"
 image = "0.25.1"
-imageproc = "0.24"
+imageproc = "0.25"
 include-flate = "0.3"
 ab_glyph = "0.2.25"
 vte = "0.13"
@@ -17,11 +17,11 @@ features = ["derive"]
 version = "4"
 
 [dependencies.nu-plugin]
-version = "0.93.0"
+version = "0.94.0"
 
 [dependencies.nu-protocol]
 features = ["plugin"]
-version = "0.93.0"
+version = "0.94.0"
 
 [features]
 all-fonts = ["font-iosevka_term", "font-anonymous_pro", "font-ubuntu"]
