@@ -11,6 +11,10 @@ impl Plugin for ImageConversionPlugin {
             Box::new(ToPngCommand::new()),
         ]
     }
+
+    fn version(&self) -> String {
+        env!("CARGO_PKG_VERSION").into()
+    }
 }
 struct FromPngCommand;
 

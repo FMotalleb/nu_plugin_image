@@ -3,33 +3,36 @@ use std log
 
 # TODO add licenses
 let fonts = [
-    {
-        name: "AnonymousPro Font",
-        feature: font-anonymous_pro 
-    },
-    {
-        name: "IosevkaTerm Font",
-        feature: font-iosevka_term 
-    },
-    {
-        name: "Ubuntu Font",
-        feature: font-ubuntu 
-    },
-    {
-        name: "Debug log level (only used for debuging)",
-        feature: with-debug
-    },
-    {
-        name: "Trace log level (only used for advanced debuging)",
-        feature: with-trace 
-    },
+    [name, feature];
+    [
+        "AnonymousPro Font",
+        font-anonymous_pro 
+    ],
+   [
+    
+   "IosevkaTerm Font",
+   font-iosevka_term 
+   ],
+    [
+        "Ubuntu Font",
+        font-ubuntu 
+    ],
+   [ 
+    "Debug log level (only used for debuging)",
+   with-debug
+   ],
+    [
+         "Trace log level (only used for advanced debuging)",
+         with-trace 
+    ],
 ]
+
 
 def main [package_file: path] {
     let repo_root = $package_file | path dirname
     let install_root = $env.NUPM_HOME | path join "plugins"
     let selected_fonts = $fonts 
-        | input list -m "select features to install"
+        | input list -d name -m "select features to install"
         | get feature
     
     let name = open ($repo_root | path join "Cargo.toml") | get package.name
