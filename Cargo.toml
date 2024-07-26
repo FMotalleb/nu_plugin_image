@@ -17,11 +17,11 @@ features = ["derive"]
 version = "4"
 
 [dependencies.nu-plugin]
-version = "0.95.0"
+version = "0.96.0"
 
 [dependencies.nu-protocol]
 features = ["plugin"]
-version = "0.95.0"
+version = "0.96.0"
 
 [features]
 all-fonts = ["font-iosevka_term", "font-anonymous_pro", "font-ubuntu"]
@@ -43,4 +43,4 @@ license = "MIT"
 name = "nu_plugin_image"
 readme = "README.md"
 repository = "https://github.com/FMotalleb/nu_plugin_image"
-version = "0.5.2"
+version = "0.5.3"
