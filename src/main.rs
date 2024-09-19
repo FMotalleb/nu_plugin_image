@@ -151,7 +151,7 @@ impl SimplePluginCommand for ToPngCommand {
     fn description(&self) -> &str {
         "converts ansi string into png image"
     }
-    fn extra_usage(&self) -> &str {
+    fn extra_description(&self) -> &str {
         "if you change font and theme they will be used as base theme of the output and every custom flag you provide will override the selected theme or font"
     }
 
