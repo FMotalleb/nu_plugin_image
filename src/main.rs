@@ -54,7 +54,7 @@ impl SimplePluginCommand for FromPngCommand {
             .category(Category::Conversions)
     }
 
-    fn usage(&self) -> &str {
+    fn description(&self) -> &str {
         "create ansi text from an image"
     }
 
@@ -148,7 +148,7 @@ impl SimplePluginCommand for ToPngCommand {
                 .category(Category::Conversions)
     }
 
-    fn usage(&self) -> &str {
+    fn description(&self) -> &str {
         "converts ansi string into png image"
     }
     fn extra_usage(&self) -> &str {
