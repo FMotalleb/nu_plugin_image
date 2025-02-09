@@ -7,21 +7,21 @@ image = "0.25.5"
 imageproc = "0.25"
 include-flate = "0.3"
 ab_glyph = "0.2.25"
-vte = "0.13"
+vte = "0.15.0"
 lazy_static = "1.4.0"
 slog-term = "2.9.1"
 slog-async = "2.8.0"
 
 [dependencies.clap]
 features = ["derive"]
-version = "4.5.23"
+version = "4.5.28"
 
 [dependencies.nu-plugin]
-version = "0.101.0"
+version = "0.102.0"
 
 [dependencies.nu-protocol]
 features = ["plugin"]
-version = "0.101.0"
+version = "0.102.0"
 
 [features]
 all-fonts = ["font-iosevka_term", "font-anonymous_pro", "font-ubuntu"]
@@ -43,4 +43,4 @@ license = "MIT"
 name = "nu_plugin_image"
 readme = "README.md"
 repository = "https://github.com/FMotalleb/nu_plugin_image"
-version = "0.5.8"
+version = "0.102.0"

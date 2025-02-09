@@ -6,24 +6,23 @@ let fonts = [
     [name, feature];
     [
         "AnonymousPro Font",
-        font-anonymous_pro 
+        font-anonymous_pro
     ],
-   [
-    
-   "IosevkaTerm Font",
-   font-iosevka_term 
-   ],
+    [
+        "IosevkaTerm Font",
+        font-iosevka_term 
+    ],
     [
         "Ubuntu Font",
-        font-ubuntu 
+        font-ubuntu
     ],
-   [ 
-    "Debug log level (only used for debuging)",
-   with-debug
-   ],
+    [ 
+        "Debug log level (only used for debuging)",
+        with-debug
+    ],
     [
-         "Trace log level (only used for advanced debuging)",
-         with-trace 
+        "Trace log level (only used for advanced debuging)",
+        with-trace 
     ],
 ]
 
