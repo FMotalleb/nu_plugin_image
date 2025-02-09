@@ -56,11 +56,7 @@ pub fn make_image(
         match reader.read(&mut buf) {
             Ok(0) => break,
 
-            Ok(n) => {
-                for byte in &buf[..n] {
-                    state_machine.advance(&mut performer, *byte);
-                }
-            }
+            Ok(n) => state_machine.advance(&mut performer, &buf[..n]),
 
             Err(err) => {
                 warn!("{err}");
