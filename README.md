@@ -111,13 +111,5 @@ plugin add target/release/nu_plugin_image
 ```bash
 cargo install --git https://github.com/FMotalleb/nu_plugin_image.git  
 plugin add ~/.cargo/bin/nu_plugin_image  
-```  
-
-### 📦 Install via Cargo (crates.io) _Not Recommended_  
->
-> _Since I live in Iran and crates.io often restricts package updates, the version there might be outdated._  
-
-```bash
-cargo install nu_plugin_image  
-plugin add ~/.cargo/bin/nu_plugin_image  
 ```
+
