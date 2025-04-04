@@ -1,6 +1,6 @@
 use crate::{trace, warn};
 use ab_glyph::{Font, FontRef, Glyph, Point};
-use image::{Rgb, RgbImage};
+use image::{Rgba, RgbaImage};
 use imageproc::drawing::draw_text_mut;
 use std::collections::BTreeMap;
 use vte::{Params, Perform};
@@ -233,7 +233,7 @@ impl<'a> Perform for Printer<'a> {
     fn esc_dispatch(&mut self, _intermediates: &[u8], _ignore: bool, _byte: u8) {}
 }
 
-impl<'a> From<Printer<'a>> for RgbImage {
+impl<'a> From<Printer<'a>> for RgbaImage {
     fn from(printer: Printer) -> Self {
         let width = printer
             .state
@@ -253,11 +253,11 @@ impl<'a> From<Printer<'a>> for RgbImage {
             .unwrap_or(&0)
             + printer.settings_internal.new_line_distance;
 
-        let mut image = RgbImage::new(width, height);
+        let mut image = RgbaImage::new(width, height);
 
         // Set primary background
         for (_x, _y, pixel) in image.enumerate_pixels_mut() {
-            *pixel = image::Rgb(
+            *pixel = image::Rgba(
                 printer
                     .settings
                     .palette
@@ -273,7 +273,7 @@ impl<'a> From<Printer<'a>> for RgbImage {
             for x in *x..background_end_x {
                 for y in *y..background_end_y {
                     let pixel =
-                        image::Rgb(printer.settings.palette.get_color(entry.background_color));
+                        image::Rgba(printer.settings.palette.get_color(entry.background_color));
 
                     image.put_pixel(x, y, pixel);
                 }
@@ -290,7 +290,7 @@ impl<'a> From<Printer<'a>> for RgbImage {
 
             draw_text_mut(
                 &mut image,
-                Rgb(printer.settings.palette.get_color(entry.foreground_color)),
+                Rgba(printer.settings.palette.get_color(entry.foreground_color)),
                 (*x).try_into().unwrap(),
                 (*y).try_into().unwrap(),
                 printer.settings.scale,

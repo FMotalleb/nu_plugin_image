@@ -1,4 +1,4 @@
-use image::RgbImage;
+use image::RgbaImage;
 use std::{
     io::{BufReader, Read},
     path::Path,
@@ -65,7 +65,7 @@ pub fn make_image(
         }
     }
 
-    let image: RgbImage = performer.into();
+    let image: RgbaImage = performer.into();
 
     image.save(output_path).unwrap();
 }

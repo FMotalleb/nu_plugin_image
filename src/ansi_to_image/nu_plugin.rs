@@ -9,7 +9,7 @@ use crate::FontFamily;
 
 use super::{
     ansi_to_image::make_image,
-    palette::{hex_to_rgb, Palette},
+    palette::{strhex_to_rgba, Palette},
 };
 
 pub fn ansi_to_image(
@@ -180,9 +180,10 @@ fn load_custom_theme(call: &EvaluatedCall, theme: Palette) -> Palette {
     );
     Palette::Custom(result)
 }
-fn read_hex_to_array(call: &EvaluatedCall, name: &str) -> Option<[u8; 3]> {
-    if let Some(Value::Int { val, .. }) = call.get_flag_value(name) {
-        return Some(hex_to_rgb(val.into()));
+
+fn read_hex_to_array(call: &EvaluatedCall, name: &str) -> Option<[u8; 4]> {
+    if let Some(Value::String { val, .. }) = call.get_flag_value(name) {
+        return strhex_to_rgba(val);
     }
     None
 }
