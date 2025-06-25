@@ -28,8 +28,8 @@ jobs:
         id: extract_version
         shell: nu {0}
         run: |
-          open Cargo.toml | get package.version | str trim
-          echo "version=$VERSION" | save --append "$GITHUB_OUTPUT"
+          let version = (open Cargo.toml | get package.version | str trim)
+          $"version=($version)" | save --force $env.GITHUB_OUTPUT
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
