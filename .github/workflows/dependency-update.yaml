@@ -21,14 +21,20 @@ jobs:
           http get https://raw.githubusercontent.com/FMotalleb/nushell_sync_script/refs/heads/main/bump_dependencies.nu
             | save /tmp/update.nu
           nu /tmp/update.nu
-          open Cargo.toml | get package.version | str trim | echo $in
       - uses: EndBug/add-and-commit@v9 
         with:
           author_name: GitHub-Action
+      - name: Extract Version
+        id: extract_version
+        shell: nu {0}
+        run: |
+          open Cargo.toml | get package.version | str trim
+          echo "version=$VERSION" | save --append "$GITHUB_OUTPUT"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.upgrade.outputs.stdout }}
-          name: Release v${{ steps.upgrade.outputs.stdout }}
+          tag_name: v${{ steps.extract_version.outputs.version }}
+          name: Release v${{ steps.extract_version.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
