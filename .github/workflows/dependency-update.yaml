@@ -17,7 +17,9 @@ jobs:
         -   name: prepare
             shell: nu -c {0}
             run: |
-              nu -c $(http get https://raw.githubusercontent.com/FMotalleb/nushell_sync_script/refs/heads/main/bump_dependencies.nu)
+              http get https://raw.githubusercontent.com/FMotalleb/nushell_sync_script/refs/heads/main/bump_dependencies.nu
+                | save /tmp/update.nu
+              nu /tmp/update.nu
         -   uses: EndBug/add-and-commit@v9 
             
             with:
