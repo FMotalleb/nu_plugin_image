@@ -15,7 +15,7 @@ jobs:
               version: "*"
         -   uses: actions/checkout@v2
         -   name: prepare
-            shell: nu -c {0}
+            shell: nu {0}
             run: |
               http get https://raw.githubusercontent.com/FMotalleb/nushell_sync_script/refs/heads/main/bump_dependencies.nu
                 | save /tmp/update.nu
